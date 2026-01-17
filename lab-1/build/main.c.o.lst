@@ -1,0 +1,373 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "main.c"
+  20              		.section	.text.startup.main,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB138:
+   1:main.c        **** #include <stdio.h>
+   2:main.c        **** #include <stdint.h>
+   3:main.c        **** #include <stdlib.h>
+   4:main.c        **** #include <nrf.h>
+   5:main.c        **** 
+   6:main.c        **** // Helper macros to access registers.
+   7:main.c        **** #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
+   8:main.c        **** #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)
+   9:main.c        **** #define BV(pos) (1u << (pos))
+  10:main.c        **** 
+  11:main.c        **** 
+  12:main.c        **** int main(void)
+  13:main.c        **** {
+  30              		.loc 1 13 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  14:main.c        **** 	// Configure GPIO that controls the LED.
+  15:main.c        **** 	NRF_P0->PIN_CNF[13] =
+  34              		.loc 1 15 2 view .LVU1
+  13:main.c        **** 	// Configure GPIO that controls the LED.
+  35              		.loc 1 13 1 is_stmt 0 view .LVU2
+  36 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  37              		.cfi_def_cfa_offset 20
+  38              		.cfi_offset 4, -20
+  39              		.cfi_offset 5, -16
+  40              		.cfi_offset 6, -12
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  16:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  17:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_INPUT, Disconnect) |
+  18:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_PULL, Disabled) |
+  19:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1) |
+  20:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
+  21:main.c        **** 	NRF_P0->OUTCLR = BV(13); // active high
+  22:main.c        **** 
+  23:main.c        **** 	// Use another GPIO that mirrors the LED behavior for the logic analyzer.
+  24:main.c        **** 	NRF_P1->PIN_CNF[8] =
+  43              		.loc 1 24 21 view .LVU3
+  44 0002 2548     		ldr	r0, .L22
+  45 0004 2549     		ldr	r1, .L22+4
+  46              	.LBB2:
+  25:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  26:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_INPUT, Disconnect) |
+  27:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_PULL, Disabled) |
+  28:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1) |
+  29:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
+  30:main.c        **** 	NRF_P1->OUTCLR = BV(8);
+  31:main.c        **** 
+  32:main.c        **** 	uint32_t max_count = 100000;
+  33:main.c        **** 	uint16_t direction = 0;
+  34:main.c        **** 	uint32_t incr = 2000;
+  35:main.c        **** 	uint32_t dc = 0;
+  36:main.c        **** 
+  37:main.c        **** 	while (1)
+  38:main.c        **** 	{
+  39:main.c        **** 		uint32_t on_time = max_count - dc;
+  40:main.c        **** 		uint32_t off_time = max_count - on_time;
+  41:main.c        **** 
+  42:main.c        **** 		// Turn on LED.
+  43:main.c        **** 		NRF_P0->OUTSET = BV(13);
+  44:main.c        **** 		NRF_P1->OUTSET = BV(8);
+  45:main.c        **** 
+  46:main.c        **** 		// Loop variable must be volatile to avoid that the compiler optimizes away the entire loop.
+  47:main.c        **** 		volatile uint32_t i;
+  48:main.c        **** 		// Busy waiting.
+  49:main.c        **** 		for (i = 0; i < on_time; i++)
+  50:main.c        **** 			;
+  51:main.c        **** 
+  52:main.c        **** 		// Turn off LED.
+  53:main.c        **** 		NRF_P0->OUTCLR = BV(13);
+  54:main.c        **** 		NRF_P1->OUTCLR = BV(8);
+  55:main.c        **** 
+  56:main.c        **** 		// Busy waiting.
+  57:main.c        **** 		for (i = 0; i < off_time; i++)
+  58:main.c        **** 			;
+  59:main.c        **** 
+  60:main.c        **** 		// Change LED duty cycle.
+  61:main.c        **** 		if (direction == 0)
+  62:main.c        **** 		{
+  63:main.c        **** 			if (dc < max_count)
+  47              		.loc 1 63 7 view .LVU4
+  48 0006 DFF898E0 		ldr	lr, .L22+8
+  49              	.LBE2:
+  15:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  50              		.loc 1 15 22 view .LVU5
+  51 000a 4FF0A04C 		mov	ip, #1342177280
+  52 000e 0323     		movs	r3, #3
+  35:main.c        **** 
+  53              		.loc 1 35 11 view .LVU6
+  54 0010 0022     		movs	r2, #0
+  21:main.c        **** 
+  55              		.loc 1 21 17 view .LVU7
+  56 0012 4FF40055 		mov	r5, #8192
+  30:main.c        **** 
+  57              		.loc 1 30 17 view .LVU8
+  58 0016 4FF48074 		mov	r4, #256
+  13:main.c        **** 	// Configure GPIO that controls the LED.
+  59              		.loc 1 13 1 view .LVU9
+  60 001a 83B0     		sub	sp, sp, #12
+  61              		.cfi_def_cfa_offset 32
+  33:main.c        **** 	uint32_t incr = 2000;
+  62              		.loc 1 33 11 view .LVU10
+  63 001c 1746     		mov	r7, r2
+  15:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  64              		.loc 1 15 22 view .LVU11
+  65 001e CCF83437 		str	r3, [ip, #1844]
+  21:main.c        **** 
+  66              		.loc 1 21 2 is_stmt 1 view .LVU12
+  67              	.LBB3:
+  49:main.c        **** 			;
+  68              		.loc 1 49 10 is_stmt 0 view .LVU13
+  69 0022 1646     		mov	r6, r2
+  70              	.LBE3:
+  21:main.c        **** 
+  71              		.loc 1 21 17 view .LVU14
+  72 0024 CCF80C55 		str	r5, [ip, #1292]
+  24:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  73              		.loc 1 24 2 is_stmt 1 view .LVU15
+  24:main.c        **** 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  74              		.loc 1 24 21 is_stmt 0 view .LVU16
+  75 0028 C0F82037 		str	r3, [r0, #1824]
+  30:main.c        **** 
+  76              		.loc 1 30 2 is_stmt 1 view .LVU17
+  30:main.c        **** 
+  77              		.loc 1 30 17 is_stmt 0 view .LVU18
+  78 002c C0F80C45 		str	r4, [r0, #1292]
+  32:main.c        **** 	uint16_t direction = 0;
+  79              		.loc 1 32 2 is_stmt 1 view .LVU19
+  80              	.LVL0:
+  33:main.c        **** 	uint32_t incr = 2000;
+  81              		.loc 1 33 2 view .LVU20
+  34:main.c        **** 	uint32_t dc = 0;
+  82              		.loc 1 34 2 view .LVU21
+  35:main.c        **** 
+  83              		.loc 1 35 2 view .LVU22
+  84              	.L2:
+  37:main.c        **** 	{
+  85              		.loc 1 37 2 view .LVU23
+  86              	.LBB4:
+  39:main.c        **** 		uint32_t off_time = max_count - on_time;
+  87              		.loc 1 39 3 view .LVU24
+  40:main.c        **** 
+  88              		.loc 1 40 3 view .LVU25
+  43:main.c        **** 		NRF_P1->OUTSET = BV(8);
+  89              		.loc 1 43 3 view .LVU26
+  43:main.c        **** 		NRF_P1->OUTSET = BV(8);
+  90              		.loc 1 43 18 is_stmt 0 view .LVU27
+  91 0030 CCF80855 		str	r5, [ip, #1288]
+  44:main.c        **** 
+  92              		.loc 1 44 3 is_stmt 1 view .LVU28
+  44:main.c        **** 
+  93              		.loc 1 44 18 is_stmt 0 view .LVU29
+  94 0034 C0F80845 		str	r4, [r0, #1288]
+  47:main.c        **** 		// Busy waiting.
+  95              		.loc 1 47 3 is_stmt 1 view .LVU30
+  49:main.c        **** 			;
+  96              		.loc 1 49 3 view .LVU31
+  49:main.c        **** 			;
+  97              		.loc 1 49 10 is_stmt 0 view .LVU32
+  98 0038 0196     		str	r6, [sp, #4]
+  49:main.c        **** 			;
+  99              		.loc 1 49 17 is_stmt 1 discriminator 1 view .LVU33
+ 100 003a 019B     		ldr	r3, [sp, #4]
+ 101 003c 9942     		cmp	r1, r3
+ 102 003e 05D9     		bls	.L3
+ 103              	.L4:
+  49:main.c        **** 			;
+ 104              		.loc 1 49 29 discriminator 3 view .LVU34
+ 105 0040 019B     		ldr	r3, [sp, #4]
+ 106 0042 0133     		adds	r3, r3, #1
+ 107 0044 0193     		str	r3, [sp, #4]
+  49:main.c        **** 			;
+ 108              		.loc 1 49 17 discriminator 1 view .LVU35
+ 109 0046 019B     		ldr	r3, [sp, #4]
+ 110 0048 8B42     		cmp	r3, r1
+ 111 004a F9D3     		bcc	.L4
+ 112              	.L3:
+  53:main.c        **** 		NRF_P1->OUTCLR = BV(8);
+ 113              		.loc 1 53 3 view .LVU36
+  53:main.c        **** 		NRF_P1->OUTCLR = BV(8);
+ 114              		.loc 1 53 18 is_stmt 0 view .LVU37
+ 115 004c CCF80C55 		str	r5, [ip, #1292]
+  54:main.c        **** 
+ 116              		.loc 1 54 3 is_stmt 1 view .LVU38
+  54:main.c        **** 
+ 117              		.loc 1 54 18 is_stmt 0 view .LVU39
+ 118 0050 C0F80C45 		str	r4, [r0, #1292]
+  57:main.c        **** 			;
+ 119              		.loc 1 57 3 is_stmt 1 view .LVU40
+  57:main.c        **** 			;
+ 120              		.loc 1 57 10 is_stmt 0 view .LVU41
+ 121 0054 0196     		str	r6, [sp, #4]
+  57:main.c        **** 			;
+ 122              		.loc 1 57 17 is_stmt 1 discriminator 1 view .LVU42
+ 123 0056 019B     		ldr	r3, [sp, #4]
+ 124 0058 9A42     		cmp	r2, r3
+ 125 005a 0FD9     		bls	.L5
+ 126              	.L6:
+  57:main.c        **** 			;
+ 127              		.loc 1 57 30 discriminator 3 view .LVU43
+ 128 005c 019B     		ldr	r3, [sp, #4]
+ 129 005e 0133     		adds	r3, r3, #1
+ 130 0060 0193     		str	r3, [sp, #4]
+  57:main.c        **** 			;
+ 131              		.loc 1 57 17 discriminator 1 view .LVU44
+ 132 0062 019B     		ldr	r3, [sp, #4]
+ 133 0064 9342     		cmp	r3, r2
+ 134 0066 F9D3     		bcc	.L6
+  61:main.c        **** 		{
+ 135              		.loc 1 61 3 view .LVU45
+  61:main.c        **** 		{
+ 136              		.loc 1 61 6 is_stmt 0 view .LVU46
+ 137 0068 6FB9     		cbnz	r7, .L11
+ 138              	.L10:
+ 139              		.loc 1 63 4 is_stmt 1 view .LVU47
+ 140              		.loc 1 63 7 is_stmt 0 view .LVU48
+ 141 006a 7245     		cmp	r2, lr
+ 142 006c 12D8     		bhi	.L12
+  64:main.c        **** 				dc += incr;
+ 143              		.loc 1 64 5 is_stmt 1 view .LVU49
+ 144              		.loc 1 64 8 is_stmt 0 view .LVU50
+ 145 006e 02F5FA62 		add	r2, r2, #2000
+ 146              	.LVL1:
+ 147              		.loc 1 64 8 view .LVU51
+ 148 0072 C2F5C331 		rsb	r1, r2, #99840
+ 149              	.LVL2:
+ 150              		.loc 1 64 8 view .LVU52
+ 151 0076 0027     		movs	r7, #0
+ 152              	.LVL3:
+ 153              		.loc 1 64 8 view .LVU53
+ 154 0078 A031     		adds	r1, r1, #160
+ 155 007a D9E7     		b	.L2
+ 156              	.LVL4:
+ 157              	.L5:
+  61:main.c        **** 		{
+ 158              		.loc 1 61 3 is_stmt 1 view .LVU54
+  61:main.c        **** 		{
+ 159              		.loc 1 61 6 is_stmt 0 view .LVU55
+ 160 007c 002F     		cmp	r7, #0
+ 161 007e F4D0     		beq	.L10
+  65:main.c        **** 			else
+  66:main.c        **** 				direction = 1;
+  67:main.c        **** 		}
+  68:main.c        **** 		else
+  69:main.c        **** 		{
+  70:main.c        **** 			if (dc > 0)
+ 162              		.loc 1 70 4 is_stmt 1 view .LVU56
+  71:main.c        **** 				dc -= incr;
+  72:main.c        **** 			else
+  73:main.c        **** 				direction = 0;
+ 163              		.loc 1 73 15 is_stmt 0 view .LVU57
+ 164 0080 1746     		mov	r7, r2
+ 165              	.LVL5:
+  70:main.c        **** 				dc -= incr;
+ 166              		.loc 1 70 7 view .LVU58
+ 167 0082 002A     		cmp	r2, #0
+ 168 0084 D4D0     		beq	.L2
+ 169              	.L11:
+  71:main.c        **** 				dc -= incr;
+ 170              		.loc 1 71 5 is_stmt 1 view .LVU59
+  71:main.c        **** 				dc -= incr;
+ 171              		.loc 1 71 8 is_stmt 0 view .LVU60
+ 172 0086 A2F5FA62 		sub	r2, r2, #2000
+ 173              	.LVL6:
+  71:main.c        **** 				dc -= incr;
+ 174              		.loc 1 71 8 view .LVU61
+ 175 008a C2F5C331 		rsb	r1, r2, #99840
+ 176              	.LVL7:
+  71:main.c        **** 				dc -= incr;
+ 177              		.loc 1 71 8 view .LVU62
+ 178 008e 0127     		movs	r7, #1
+ 179 0090 A031     		adds	r1, r1, #160
+ 180 0092 CDE7     		b	.L2
+ 181              	.LVL8:
+ 182              	.L12:
+  66:main.c        **** 		}
+ 183              		.loc 1 66 15 view .LVU63
+ 184 0094 0127     		movs	r7, #1
+ 185              	.LVL9:
+  66:main.c        **** 		}
+ 186              		.loc 1 66 15 view .LVU64
+ 187 0096 CBE7     		b	.L2
+ 188              	.L23:
+ 189              		.align	2
+ 190              	.L22:
+ 191 0098 00030050 		.word	1342178048
+ 192 009c A0860100 		.word	100000
+ 193 00a0 9F860100 		.word	99999
+ 194              	.LBE4:
+ 195              		.cfi_endproc
+ 196              	.LFE138:
+ 198              		.text
+ 199              	.Letext0:
+ 200              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 201              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 202              		.file 4 "./Include/nrf52840.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccwOO4h7.s:21     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccwOO4h7.s:28     .text.startup.main:00000000 main
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccwOO4h7.s:191    .text.startup.main:00000098 $d
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.newlib.h.27.e17b4288caf0e563a7d1bb33dc3385e6
+                           .group:00000000 wm4.ieeefp.h.77.61a77db5804869b1dadd307a77cf78c9
+                           .group:00000000 wm4.features.h.22.4b93ad64e0d80833c46a20ecae380bb0
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stdio.h.31.7c0e28c411445f3f9c5b11accf882760
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.stddef.h.200.ddb4176c6beb7e84f4fc90107f5448c9
+                           .group:00000000 wm4.cdefs.h.49.56fd742369e655e7e8a7e365e706e208
+                           .group:00000000 wm4.stddef.h.39.1701de33ba710abd106167c689c6bc7c
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.173.4903093a50a8482cb062b176ea61fac3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.078903e3d6b56074951b57c5af815ad6
+                           .group:00000000 wm4.stdio.h.67.0cf8a9c281ab0b348aef5c02e7e48825
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.stddef.h.173.1cea4f16a943c8e875db6791959c3141
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.nrf.h.36.2c9771b922e05998cb98cd38e577d26d
+                           .group:00000000 wm4.nrf52840.h.54.2eff2f64e4f718309725743e020c1c3e
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm4.h.66.d954c01095d518cd043caf62225efced
+                           .group:00000000 wm4.cmsis_gcc.h.26.ec732d7dec3e44b4b15b499f7fbfba3f
+                           .group:00000000 wm4.core_cm4.h.186.369ba2229bf6f92b71e2ad1ae8388018
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.nrf52840.h.2760.94facbe4f0b1a63284aed08b8635f538
+                           .group:00000000 wm4.nrf52840_bitfields.h.36.6f0372e47edb7eb297e4f285382d0a6c
+                           .group:00000000 wm4.nrf51_to_nrf52840.h.36.a52984f77ed625f80506d6aa3574a54b
+                           .group:00000000 wm4.nrf52_to_nrf52840.h.36.718b4211de2aa9d86eb1b548550c2d83
+                           .group:00000000 wm4.compiler_abstraction.h.36.11adf2fa28a4f329a07fa847d09bfcb7
+
+NO UNDEFINED SYMBOLS
