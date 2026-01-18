@@ -1,0 +1,224 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task3.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "task3.c"
+  20              		.section	.text.startup.main,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB135:
+   1:task3.c       **** #include <stdint.h>
+   2:task3.c       **** #include <nrf.h>
+   3:task3.c       **** 
+   4:task3.c       **** // remember, everything is GPIO
+   5:task3.c       **** 
+   6:task3.c       **** // Helper macros to access registers.
+   7:task3.c       **** #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
+   8:task3.c       **** #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)
+   9:task3.c       **** #define BV(pos) (1u << (pos))
+  10:task3.c       **** 
+  11:task3.c       **** 
+  12:task3.c       **** 
+  13:task3.c       **** int main(void)
+  14:task3.c       **** {
+  30              		.loc 1 14 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  15:task3.c       ****     // Configure the GPIO pin of the LED.
+  16:task3.c       ****     NRF_P0->PIN_CNF[13] = (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos) |
+  34              		.loc 1 16 5 view .LVU1
+  14:task3.c       ****     // Configure the GPIO pin of the LED.
+  35              		.loc 1 14 1 is_stmt 0 view .LVU2
+  36 0000 00B5     		push	{lr}
+  37              		.cfi_def_cfa_offset 4
+  38              		.cfi_offset 14, -4
+  17:task3.c       ****                          (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+  18:task3.c       ****                          (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
+  19:task3.c       ****                          (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+  20:task3.c       ****                          (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos);
+  21:task3.c       **** 
+  22:task3.c       ****     // Configure the timer.
+  23:task3.c       **** 	// TODO
+  24:task3.c       ****     NRF_TIMER0->MODE = BV_BY_NAME(TIMER_MODE_MODE, Timer);
+  39              		.loc 1 24 22 view .LVU3
+  40 0002 134A     		ldr	r2, .L7
+  41              	.LBB2:
+  25:task3.c       ****     NRF_TIMER0->PRESCALER = 4; 
+  26:task3.c       ****     NRF_TIMER0->BITMODE = BV_BY_NAME(TIMER_BITMODE_BITMODE, 32Bit);
+  27:task3.c       ****     // now f_timer = 1Mhz
+  28:task3.c       ****     NRF_TIMER0->TASKS_CLEAR = 1;
+  29:task3.c       **** 
+  30:task3.c       ****     // Start the timer.
+  31:task3.c       **** 	// TODO
+  32:task3.c       ****     NRF_TIMER0->TASKS_START = 1;
+  33:task3.c       **** 
+  34:task3.c       ****     // Read and store current counter value of timer.
+  35:task3.c       **** 	// TODO
+  36:task3.c       ****     NRF_TIMER0->TASKS_CAPTURE[0] = 1;   // snap values via TASKS_CAPTURE to put value in the CC[0]
+  37:task3.c       ****     uint32_t last_val = (NRF_TIMER0->CC[0]);
+  38:task3.c       **** 
+  39:task3.c       ****     while (1)
+  40:task3.c       ****     {
+  41:task3.c       ****         // Compute the difference between the current and the stored (last)
+  42:task3.c       ****         // counter value.
+  43:task3.c       **** 		// TODO
+  44:task3.c       ****         NRF_TIMER0->TASKS_CAPTURE[0] = 1;
+  45:task3.c       ****         uint32_t diff = (NRF_TIMER0->CC[0] - last_val);
+  46:task3.c       **** 
+  47:task3.c       ****         // Check if 1 second has passed and toggle the LED.
+  48:task3.c       **** 		// TODO
+  49:task3.c       ****         if (diff == 1000000) {
+  42              		.loc 1 49 12 view .LVU4
+  43 0004 DFF84CC0 		ldr	ip, .L7+4
+  44              	.LBE2:
+  16:task3.c       ****                          (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+  45              		.loc 1 16 25 view .LVU5
+  46 0008 4FF0A04E 		mov	lr, #1342177280
+  47 000c 0323     		movs	r3, #3
+  24:task3.c       ****     NRF_TIMER0->PRESCALER = 4; 
+  48              		.loc 1 24 22 view .LVU6
+  49 000e 0020     		movs	r0, #0
+  16:task3.c       ****                          (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+  50              		.loc 1 16 25 view .LVU7
+  51 0010 CEF83437 		str	r3, [lr, #1844]
+  24:task3.c       ****     NRF_TIMER0->PRESCALER = 4; 
+  52              		.loc 1 24 5 is_stmt 1 view .LVU8
+  28:task3.c       **** 
+  53              		.loc 1 28 29 is_stmt 0 view .LVU9
+  54 0014 0121     		movs	r1, #1
+  24:task3.c       ****     NRF_TIMER0->PRESCALER = 4; 
+  55              		.loc 1 24 22 view .LVU10
+  56 0016 C2F80405 		str	r0, [r2, #1284]
+  25:task3.c       ****     NRF_TIMER0->BITMODE = BV_BY_NAME(TIMER_BITMODE_BITMODE, 32Bit);
+  57              		.loc 1 25 5 is_stmt 1 view .LVU11
+  25:task3.c       ****     NRF_TIMER0->BITMODE = BV_BY_NAME(TIMER_BITMODE_BITMODE, 32Bit);
+  58              		.loc 1 25 27 is_stmt 0 view .LVU12
+  59 001a 0420     		movs	r0, #4
+  60 001c C2F81005 		str	r0, [r2, #1296]
+  26:task3.c       ****     // now f_timer = 1Mhz
+  61              		.loc 1 26 5 is_stmt 1 view .LVU13
+  26:task3.c       ****     // now f_timer = 1Mhz
+  62              		.loc 1 26 25 is_stmt 0 view .LVU14
+  63 0020 C2F80835 		str	r3, [r2, #1288]
+  28:task3.c       **** 
+  64              		.loc 1 28 5 is_stmt 1 view .LVU15
+  28:task3.c       **** 
+  65              		.loc 1 28 29 is_stmt 0 view .LVU16
+  66 0024 D160     		str	r1, [r2, #12]
+  32:task3.c       **** 
+  67              		.loc 1 32 5 is_stmt 1 view .LVU17
+  32:task3.c       **** 
+  68              		.loc 1 32 29 is_stmt 0 view .LVU18
+  69 0026 1160     		str	r1, [r2]
+  36:task3.c       ****     uint32_t last_val = (NRF_TIMER0->CC[0]);
+  70              		.loc 1 36 5 is_stmt 1 view .LVU19
+  36:task3.c       ****     uint32_t last_val = (NRF_TIMER0->CC[0]);
+  71              		.loc 1 36 34 is_stmt 0 view .LVU20
+  72 0028 1164     		str	r1, [r2, #64]
+  37:task3.c       **** 
+  73              		.loc 1 37 5 is_stmt 1 view .LVU21
+  37:task3.c       **** 
+  74              		.loc 1 37 14 is_stmt 0 view .LVU22
+  75 002a D2F84005 		ldr	r0, [r2, #1344]
+  76              	.L2:
+  77              	.LVL0:
+  39:task3.c       ****     {
+  78              		.loc 1 39 5 is_stmt 1 view .LVU23
+  79              	.LBB3:
+  44:task3.c       ****         uint32_t diff = (NRF_TIMER0->CC[0] - last_val);
+  80              		.loc 1 44 9 view .LVU24
+  44:task3.c       ****         uint32_t diff = (NRF_TIMER0->CC[0] - last_val);
+  81              		.loc 1 44 38 is_stmt 0 view .LVU25
+  82 002e 1164     		str	r1, [r2, #64]
+  45:task3.c       **** 
+  83              		.loc 1 45 9 is_stmt 1 view .LVU26
+  45:task3.c       **** 
+  84              		.loc 1 45 40 is_stmt 0 view .LVU27
+  85 0030 D2F84035 		ldr	r3, [r2, #1344]
+  86              	.LVL1:
+  87              		.loc 1 49 9 is_stmt 1 view .LVU28
+  45:task3.c       **** 
+  88              		.loc 1 45 18 is_stmt 0 view .LVU29
+  89 0034 1B1A     		subs	r3, r3, r0
+  90              	.LVL2:
+  91              		.loc 1 49 12 view .LVU30
+  92 0036 6345     		cmp	r3, ip
+  93 0038 F9D1     		bne	.L2
+  50:task3.c       ****             NRF_P0->OUT ^= BV(13);
+  94              		.loc 1 50 13 is_stmt 1 view .LVU31
+  95              		.loc 1 50 19 is_stmt 0 view .LVU32
+  96 003a DEF80435 		ldr	r3, [lr, #1284]
+  97              	.LVL3:
+  98              		.loc 1 50 25 view .LVU33
+  99 003e 83F40053 		eor	r3, r3, #8192
+ 100 0042 CEF80435 		str	r3, [lr, #1284]
+  51:task3.c       ****             NRF_TIMER0->TASKS_CAPTURE[0] = 1;
+ 101              		.loc 1 51 13 is_stmt 1 view .LVU34
+ 102              		.loc 1 51 42 is_stmt 0 view .LVU35
+ 103 0046 1164     		str	r1, [r2, #64]
+  52:task3.c       ****             last_val = NRF_TIMER0->CC[0];
+ 104              		.loc 1 52 13 is_stmt 1 view .LVU36
+ 105              		.loc 1 52 22 is_stmt 0 view .LVU37
+ 106 0048 D2F84005 		ldr	r0, [r2, #1344]
+ 107              	.LVL4:
+ 108              		.loc 1 52 22 view .LVU38
+ 109 004c EFE7     		b	.L2
+ 110              	.L8:
+ 111 004e 00BF     		.align	2
+ 112              	.L7:
+ 113 0050 00800040 		.word	1073774592
+ 114 0054 40420F00 		.word	1000000
+ 115              	.LBE3:
+ 116              		.cfi_endproc
+ 117              	.LFE135:
+ 119              		.text
+ 120              	.Letext0:
+ 121              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 122              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 123              		.file 4 "./Include/nrf52840.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 task3.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccdIFwAY.s:21     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccdIFwAY.s:28     .text.startup.main:00000000 main
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccdIFwAY.s:113    .text.startup.main:00000050 $d
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.features.h.33.d554620bb17bd3b714c3fb5c268772bc
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.nrf.h.36.2c9771b922e05998cb98cd38e577d26d
+                           .group:00000000 wm4.nrf52840.h.54.2eff2f64e4f718309725743e020c1c3e
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm4.h.66.d954c01095d518cd043caf62225efced
+                           .group:00000000 wm4.cmsis_gcc.h.26.ec732d7dec3e44b4b15b499f7fbfba3f
+                           .group:00000000 wm4.core_cm4.h.186.369ba2229bf6f92b71e2ad1ae8388018
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.nrf52840.h.2760.94facbe4f0b1a63284aed08b8635f538
+                           .group:00000000 wm4.nrf52840_bitfields.h.36.6f0372e47edb7eb297e4f285382d0a6c
+                           .group:00000000 wm4.nrf51_to_nrf52840.h.36.a52984f77ed625f80506d6aa3574a54b
+                           .group:00000000 wm4.nrf52_to_nrf52840.h.36.718b4211de2aa9d86eb1b548550c2d83
+                           .group:00000000 wm4.compiler_abstraction.h.36.11adf2fa28a4f329a07fa847d09bfcb7
+
+NO UNDEFINED SYMBOLS

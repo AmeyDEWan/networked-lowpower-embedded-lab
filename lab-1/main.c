@@ -3,6 +3,16 @@
 #include <stdlib.h>
 #include <nrf.h>
 
+/*
+Use Case,Macro to Use,Why?
+Configuring Modes -> BV_BY_NAME -> "Datasheet gives names (e.g., Output, Pullup, Baud115200)."
+Enabling Flags ->  BV -> "You are just turning a bit ON (e.g., INTENSET, TASKS, CHEN)."
+Setting Numbers -> BV_BY_VALUE -> "You have a raw number (e.g., frequency, counter value) that needs to fit in a bitfield."
+Clearing Bits -> ~BV(...) -> "You need to flip bits to 0 (e.g., REG &= ~BV(5))."
+
+*/
+
+
 // Helper macros to access registers.
 #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
 #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)

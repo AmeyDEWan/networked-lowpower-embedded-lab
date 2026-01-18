@@ -1,0 +1,131 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task2.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "task2.c"
+  20              		.section	.text.startup.main,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB135:
+   1:task2.c       **** #include <stdint.h>
+   2:task2.c       **** #include <nrf.h>
+   3:task2.c       **** 
+   4:task2.c       **** // Control LED(P0.13) using P0.11 button
+   5:task2.c       **** 
+   6:task2.c       **** // Helper macros to access registers.
+   7:task2.c       **** #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
+   8:task2.c       **** #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)
+   9:task2.c       **** #define BV(pos) (1u << (pos))
+  10:task2.c       **** 
+  11:task2.c       **** int main(void)
+  12:task2.c       **** {
+  30              		.loc 1 12 1 view -0
+  31              		.cfi_startproc
+  32              		@ Volatile: function does not return.
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+  13:task2.c       ****     // Configure the GPIO pin of the LED.
+  14:task2.c       ****     // TODO
+  15:task2.c       ****     NRF_P0->PIN_CNF[13] = BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) | BV_BY_NAME(GPIO_PIN_CNF_INPUT, Dis
+  36              		.loc 1 15 5 view .LVU1
+  37              		.loc 1 15 25 is_stmt 0 view .LVU2
+  38 0000 4FF0A043 		mov	r3, #1342177280
+  39 0004 0321     		movs	r1, #3
+  16:task2.c       **** 
+  17:task2.c       ****     // Configure the GPIO pin of the button.
+  18:task2.c       **** 	// TODO
+  19:task2.c       ****     NRF_P0->PIN_CNF[11] = BV_BY_NAME(GPIO_PIN_CNF_DIR, Input) | BV_BY_NAME(GPIO_PIN_CNF_PULL, Pullu
+  40              		.loc 1 19 25 view .LVU3
+  41 0006 0C22     		movs	r2, #12
+  15:task2.c       **** 
+  42              		.loc 1 15 25 view .LVU4
+  43 0008 C3F83417 		str	r1, [r3, #1844]
+  44              		.loc 1 19 5 is_stmt 1 view .LVU5
+  20:task2.c       **** 
+  21:task2.c       ****     while (1)
+  22:task2.c       ****     {
+  23:task2.c       ****         // Read button state and control the LED.
+  24:task2.c       **** 		// TODO
+  25:task2.c       ****         //volatile uint32_t pin_state = NRF_P0->IN & BV(11);
+  26:task2.c       ****         if ((NRF_P0->IN & BV(11)) != 0) {
+  27:task2.c       ****             NRF_P0->OUTCLR = BV(13); // active high
+  28:task2.c       ****         } else {
+  29:task2.c       ****             NRF_P0->OUTSET = BV(13); 
+  45              		.loc 1 29 28 is_stmt 0 view .LVU6
+  46 000c 4FF40051 		mov	r1, #8192
+  19:task2.c       **** 
+  47              		.loc 1 19 25 view .LVU7
+  48 0010 C3F82C27 		str	r2, [r3, #1836]
+  49              	.L2:
+  21:task2.c       ****     {
+  50              		.loc 1 21 5 is_stmt 1 view .LVU8
+  26:task2.c       ****             NRF_P0->OUTCLR = BV(13); // active high
+  51              		.loc 1 26 9 view .LVU9
+  27:task2.c       ****         } else {
+  52              		.loc 1 27 13 view .LVU10
+  53              		.loc 1 29 13 view .LVU11
+  26:task2.c       ****             NRF_P0->OUTCLR = BV(13); // active high
+  54              		.loc 1 26 20 is_stmt 0 view .LVU12
+  55 0014 D3F81025 		ldr	r2, [r3, #1296]
+  26:task2.c       ****             NRF_P0->OUTCLR = BV(13); // active high
+  56              		.loc 1 26 12 view .LVU13
+  57 0018 1205     		lsls	r2, r2, #20
+  27:task2.c       ****         } else {
+  58              		.loc 1 27 28 view .LVU14
+  59 001a 4CBF     		ite	mi
+  60 001c C3F80C15 		strmi	r1, [r3, #1292]
+  61              		.loc 1 29 28 view .LVU15
+  62 0020 C3F80815 		strpl	r1, [r3, #1288]
+  63 0024 F6E7     		b	.L2
+  64              		.cfi_endproc
+  65              	.LFE135:
+  67 0026 00BF     		.text
+  68              	.Letext0:
+  69              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+  70              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+  71              		.file 4 "./Include/nrf52840.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 task2.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccFxqw4T.s:21     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccFxqw4T.s:28     .text.startup.main:00000000 main
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.features.h.33.d554620bb17bd3b714c3fb5c268772bc
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.nrf.h.36.2c9771b922e05998cb98cd38e577d26d
+                           .group:00000000 wm4.nrf52840.h.54.2eff2f64e4f718309725743e020c1c3e
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm4.h.66.d954c01095d518cd043caf62225efced
+                           .group:00000000 wm4.cmsis_gcc.h.26.ec732d7dec3e44b4b15b499f7fbfba3f
+                           .group:00000000 wm4.core_cm4.h.186.369ba2229bf6f92b71e2ad1ae8388018
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.nrf52840.h.2760.94facbe4f0b1a63284aed08b8635f538
+                           .group:00000000 wm4.nrf52840_bitfields.h.36.6f0372e47edb7eb297e4f285382d0a6c
+                           .group:00000000 wm4.nrf51_to_nrf52840.h.36.a52984f77ed625f80506d6aa3574a54b
+                           .group:00000000 wm4.nrf52_to_nrf52840.h.36.718b4211de2aa9d86eb1b548550c2d83
+                           .group:00000000 wm4.compiler_abstraction.h.36.11adf2fa28a4f329a07fa847d09bfcb7
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,108 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task1_1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "task1_1.c"
+  20              		.section	.text.startup.main,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB0:
+   1:task1_1.c     **** #include <stdint.h>
+   2:task1_1.c     **** 
+   3:task1_1.c     **** // Green LED -> Port 0, pin 13(P0.13)
+   4:task1_1.c     **** 
+   5:task1_1.c     **** int main(void)
+   6:task1_1.c     **** {
+  30              		.loc 1 6 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+   7:task1_1.c     ****     // Store the address of the GPIO pin configuration register of the LED.
+   8:task1_1.c     **** 	// TODO
+   9:task1_1.c     ****     uint32_t P0_base = 0x50000000; // Base address for GPIO Port 0
+  35              		.loc 1 9 5 view .LVU1
+  36              	.LVL0:
+  10:task1_1.c     ****     uint32_t P0_led_cfg_reg_offset = 0x734; // Offset for pin configuration register
+  37              		.loc 1 10 5 view .LVU2
+  11:task1_1.c     ****     uint32_t P0_outset = 0x508;
+  38              		.loc 1 11 5 view .LVU3
+  12:task1_1.c     ****     
+  13:task1_1.c     ****     // Configure the GPIO pin.
+  14:task1_1.c     **** 	// TODO
+  15:task1_1.c     ****     volatile uint32_t* p0_led_cfg_reg = (uint32_t *) (P0_base + P0_led_cfg_reg_offset);
+  39              		.loc 1 15 5 view .LVU4
+  16:task1_1.c     ****     *p0_led_cfg_reg = (1 << 0); // DIR = 0 => output
+  40              		.loc 1 16 5 view .LVU5
+  41              		.loc 1 16 21 is_stmt 0 view .LVU6
+  42 0000 4FF0A041 		mov	r1, #1342177280
+  17:task1_1.c     **** 
+  18:task1_1.c     ****     // Store the address of the register which controls the LED.
+  19:task1_1.c     **** 	// TODO
+  20:task1_1.c     ****     volatile uint32_t* p0_led_outset_reg = (uint32_t *)(P0_base + p0_led_outset_reg);
+  21:task1_1.c     **** 
+  22:task1_1.c     ****     // Activate the LED.
+  23:task1_1.c     **** 	// TODO
+  24:task1_1.c     ****     *p0_led_outset_reg = (1 << 13);
+  43              		.loc 1 24 24 view .LVU7
+  44 0004 4FF08043 		mov	r3, #1073741824
+  16:task1_1.c     ****     *p0_led_cfg_reg = (1 << 0); // DIR = 0 => output
+  45              		.loc 1 16 21 view .LVU8
+  46 0008 0120     		movs	r0, #1
+  47              		.loc 1 24 24 view .LVU9
+  48 000a 4FF40052 		mov	r2, #8192
+  16:task1_1.c     ****     *p0_led_cfg_reg = (1 << 0); // DIR = 0 => output
+  49              		.loc 1 16 21 view .LVU10
+  50 000e C1F83407 		str	r0, [r1, #1844]
+  20:task1_1.c     **** 
+  51              		.loc 1 20 5 is_stmt 1 view .LVU11
+  52              		.loc 1 24 5 view .LVU12
+  53              		.loc 1 24 24 is_stmt 0 view .LVU13
+  54 0012 1A60     		str	r2, [r3]
+  55              	.L2:
+  25:task1_1.c     **** 
+  26:task1_1.c     ****     // run forever
+  27:task1_1.c     ****     while (1)
+  56              		.loc 1 27 5 is_stmt 1 view .LVU14
+  57              		.loc 1 27 11 view .LVU15
+  58              		.loc 1 27 5 view .LVU16
+  59              		.loc 1 27 11 view .LVU17
+  60 0014 FEE7     		b	.L2
+  61              		.cfi_endproc
+  62              	.LFE0:
+  64 0016 00BF     		.text
+  65              	.Letext0:
+  66              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+  67              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+DEFINED SYMBOLS
+                            *ABS*:00000000 task1_1.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccSwchiF.s:21     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccSwchiF.s:28     .text.startup.main:00000000 main
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.features.h.33.d554620bb17bd3b714c3fb5c268772bc
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+
+NO UNDEFINED SYMBOLS
