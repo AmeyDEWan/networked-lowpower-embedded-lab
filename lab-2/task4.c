@@ -8,17 +8,24 @@
 #define BV(pos) (1u << (pos))
 
 // state machine
-typedef enum {
-    STATE_INIT,
-    STATE_LED_1,
-    STATE_LED_2,
-    STATE_LED_3,
-    STATE_LED_4,
-    STATE_ALL_OFF
+typedef struct
+{
+    STATE_DEFAULT_PATTERN,
+        STATE_PATTERN_1,
+        STATE_PATTERN_2
 } system_state_t;
 
-volatile bool timer_event_flag = false;
+// // state machine
+// typedef enum {
+//     STATE_INIT,
+//     STATE_LED_1,
+//     STATE_LED_2,
+//     STATE_LED_3,
+//     STATE_LED_4,
+//     STATE_ALL_OFF
+// } system_state_t;
 
+volatile bool timer_event_flag = false;
 
 int main(void)
 {
@@ -46,7 +53,7 @@ int main(void)
 
     // Clear to ensure the timer counter is 0.
     // TODO
-    //using short to clear timer automatically when compare event generated
+    // using short to clear timer automatically when compare event generated
     NRF_TIMER0->SHORTS = BV_BY_NAME(TIMER_SHORTS_COMPARE0_CLEAR, Enabled);
 
     // Set target count value (when to trigger the interrupt).
@@ -65,43 +72,43 @@ int main(void)
         // (WFI = "wait for interrupt" is a processor instruction).
         __WFI();
 
-        if (timer_event_flag == true) {
+        if (timer_event_flag == true)
+        {
             timer_event_flag = false;
 
-            switch(current_state) {
-                case STATE_INIT:
-                    //turn all off
-                    NRF_P0->OUTSET = (BV(13) | BV(14) | BV(15) | BV(16));
-                    current_state = STATE_LED_1;
-                    break;
-                case STATE_LED_1:
-                    NRF_P0->OUTCLR = BV(13);
-                    current_state = STATE_LED_2;
-                    break;
-                case STATE_LED_2:
-                    NRF_P0->OUTSET = BV(13);
-                    NRF_P0->OUTCLR = BV(14);
-                    current_state = STATE_LED_3;
-                    break;
-                case STATE_LED_3:
-                    NRF_P0->OUTSET = BV(14);
-                    NRF_P0->OUTCLR = BV(15);
-                    current_state = STATE_LED_4;
-                    break;
-                case STATE_LED_4:
-                    NRF_P0->OUTSET = BV(15);
-                    NRF_P0->OUTCLR = BV(16);
-                    current_state = STATE_ALL_OFF;
-                    break;  
-                case STATE_ALL_OFF:
-                    NRF_P0->OUTSET = BV(16);
-                    NRF_P0->OUTCLR = (BV(13) | BV(14) | BV(15) | BV(16));
-                    current_state = STATE_INIT;
-                    break;     
+            switch (current_state)
+            {
+            case STATE_INIT:
+                // turn all off
+                NRF_P0->OUTSET = (BV(13) | BV(14) | BV(15) | BV(16));
+                current_state = STATE_LED_1;
+                break;
+            case STATE_LED_1:
+                NRF_P0->OUTCLR = BV(13);
+                current_state = STATE_LED_2;
+                break;
+            case STATE_LED_2:
+                NRF_P0->OUTSET = BV(13);
+                NRF_P0->OUTCLR = BV(14);
+                current_state = STATE_LED_3;
+                break;
+            case STATE_LED_3:
+                NRF_P0->OUTSET = BV(14);
+                NRF_P0->OUTCLR = BV(15);
+                current_state = STATE_LED_4;
+                break;
+            case STATE_LED_4:
+                NRF_P0->OUTSET = BV(15);
+                NRF_P0->OUTCLR = BV(16);
+                current_state = STATE_ALL_OFF;
+                break;
+            case STATE_ALL_OFF:
+                NRF_P0->OUTSET = BV(16);
+                NRF_P0->OUTCLR = (BV(13) | BV(14) | BV(15) | BV(16));
+                current_state = STATE_INIT;
+                break;
             }
         }
-
-
     }
 }
 
@@ -144,10 +151,10 @@ void TIMER0_IRQHandler(void)
     //     NRF_TIMER0->TASKS_CLEAR = 1;
     // }
 
-
     // keeping ISR very small by just a shared bool flag
-    if (NRF_TIMER0->EVENTS_COMPARE[0]) {
+    if (NRF_TIMER0->EVENTS_COMPARE[0])
+    {
         NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-        timer_event_flag = true; //indication that timer event happend
+        timer_event_flag = true; // indication that timer event happend
     }
 }
