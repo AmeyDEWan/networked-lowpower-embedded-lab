@@ -1,0 +1,394 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "task1.c"
+  20              		.section	.text.startup.main,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB135:
+   1:task1.c       **** #include <stdint.h>
+   2:task1.c       **** #include <nrf.h>
+   3:task1.c       **** #include <string.h>
+   4:task1.c       **** #include <inttypes.h>
+   5:task1.c       **** #include "printf.h"
+   6:task1.c       **** 
+   7:task1.c       **** // Helper macros to access registers.
+   8:task1.c       **** #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
+   9:task1.c       **** #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)
+  10:task1.c       **** #define BV(pos) (1u << (pos))
+  11:task1.c       **** 
+  12:task1.c       **** // Forward declarations.
+  13:task1.c       **** static void twi_write(uint8_t dev_addr, volatile uint8_t *tx_data, unsigned int n_tx_data);
+  14:task1.c       **** static void twi_read(uint8_t dev_addr, volatile uint8_t *rx_buffer, unsigned int n_rx_data);
+  15:task1.c       **** static void twi_write_read(uint8_t dev_addr, volatile uint8_t *tx_data, unsigned int n_tx_data, vol
+  16:task1.c       **** static void configure_uart(void);
+  17:task1.c       **** 
+  18:task1.c       **** int main(void)
+  19:task1.c       **** {
+  30              		.loc 1 19 1 view -0
+  31              		.cfi_startproc
+  32              		@ Volatile: function does not return.
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+  20:task1.c       ****     // Configure the UART peripheral for printf.
+  21:task1.c       ****     configure_uart();
+  36              		.loc 1 21 5 view .LVU1
+  37              	.LBB4:
+  38              	.LBI4:
+  22:task1.c       **** 
+  23:task1.c       ****     //*************************************************************************
+  24:task1.c       ****     //* I2C / TWI configuration.
+  25:task1.c       ****     //*************************************************************************
+  26:task1.c       **** 
+  27:task1.c       ****     // Configure the PSEL.SCL, PSEL.SDA, and FREQUENCY register.
+  28:task1.c       ****     // TODO
+  29:task1.c       ****     NRF_TWIM0->PSEL.SCL = BV_BY_NAME(TWIM_PSEL_SCL_CONNECT, Connected) | BV_BY_VALUE(TWIM_PSEL_SCL_
+  30:task1.c       ****     NRF_TWIM0->PSEL.SDA = BV_BY_NAME(TWIM_PSEL_SDA_CONNECT, Connected) | BV_BY_VALUE(TWIM_PSEL_SDA_
+  31:task1.c       ****     NRF_TWIM0->FREQUENCY = BV_BY_NAME(TWIM_FREQUENCY_FREQUENCY, K250);
+  32:task1.c       **** 
+  33:task1.c       ****     // Configure SCL (Pin 27)
+  34:task1.c       ****     NRF_P0->PIN_CNF[27] = BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled) |
+  35:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  36:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_PULL, Pullup) |
+  37:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_INPUT, Connect) |
+  38:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DIR, Input); // Peripheral takes over direction, 
+  39:task1.c       **** 
+  40:task1.c       ****     // Configure SDA (Pin 26)
+  41:task1.c       ****     NRF_P0->PIN_CNF[26] = BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled) |
+  42:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  43:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_PULL, Pullup) |
+  44:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_INPUT, Connect) |
+  45:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DIR, Input);
+  46:task1.c       **** 
+  47:task1.c       ****     // Run forever.
+  48:task1.c       ****     while (1)
+  49:task1.c       ****         ;
+  50:task1.c       **** }
+  51:task1.c       **** 
+  52:task1.c       **** // Write n_data bytes of the buffer pointed to by data to the slave device with
+  53:task1.c       **** // the address dev_addr.
+  54:task1.c       **** static void twi_write(uint8_t dev_addr, volatile uint8_t *tx_data, unsigned int n_tx_data)
+  55:task1.c       **** {
+  56:task1.c       ****     // Enable the TWIM peripheral.
+  57:task1.c       ****     // TODO
+  58:task1.c       ****     NRF_TWIM0->ENABLE = 1;
+  59:task1.c       **** 
+  60:task1.c       ****     // Set the shortcut to stop transmitting after the last byte.
+  61:task1.c       ****     // TODO
+  62:task1.c       ****     NRF_TWIM0->SHORTS = BV_BY_NAME(TWIM_SHORTS_LASTTX_STOP, Enabled);
+  63:task1.c       **** 
+  64:task1.c       ****     // Set the device address in the ADDRESS register.
+  65:task1.c       ****     // TODO
+  66:task1.c       ****     NRF_TWIM0->ADDRESS = dev_addr;
+  67:task1.c       **** 
+  68:task1.c       ****     // Set the number of bytes we want to transmit.
+  69:task1.c       ****     // TODO
+  70:task1.c       ****     NRF_TWIM0->TXD.MAXCNT = n_tx_data;
+  71:task1.c       **** 
+  72:task1.c       ****     // Provide a pointer to a buffer where the transmit data is stored.
+  73:task1.c       ****     // TODO
+  74:task1.c       ****     NRF_TWIM0->TXD.PTR = (uint32_t)tx_data;
+  75:task1.c       **** 
+  76:task1.c       ****     // Clear events.
+  77:task1.c       ****     NRF_TWIM0->EVENTS_STOPPED = TWIM_EVENTS_STOPPED_EVENTS_STOPPED_NotGenerated << TWIM_EVENTS_STOP
+  78:task1.c       ****     NRF_TWIM0->EVENTS_ERROR = TWIM_EVENTS_ERROR_EVENTS_ERROR_NotGenerated << TWIM_EVENTS_ERROR_EVEN
+  79:task1.c       **** 
+  80:task1.c       ****     // Start transmit task.
+  81:task1.c       ****     // TODO
+  82:task1.c       ****     NRF_TWIM0->TASKS_STARTTX = 1;
+  83:task1.c       **** 
+  84:task1.c       ****     // Wait until the TWIM peripheral has stopped (STOP event after the last byte).
+  85:task1.c       ****     while (NRF_TWIM0->EVENTS_STOPPED != TWIM_EVENTS_STOPPED_EVENTS_STOPPED_Generated)
+  86:task1.c       ****         ;
+  87:task1.c       **** 
+  88:task1.c       ****     // Disable the TWIM peripheral.
+  89:task1.c       ****     // TODO
+  90:task1.c       ****     NRF_TWIM0->ENABLE = 0;
+  91:task1.c       **** }
+  92:task1.c       **** 
+  93:task1.c       **** // Read n_data bytes from the slave device with the address dev_addr and store the
+  94:task1.c       **** // data at the location pointed to by buffer.
+  95:task1.c       **** static void twi_read(uint8_t dev_addr, volatile uint8_t *rx_buffer, unsigned int n_rx_data)
+  96:task1.c       **** {
+  97:task1.c       ****     // Enable the TWIM peripheral.
+  98:task1.c       ****     // TODO
+  99:task1.c       ****     NRF_TWIM0->ENABLE = 1;
+ 100:task1.c       **** 
+ 101:task1.c       ****     // Set the shortcut to stop receiving after the last byte.
+ 102:task1.c       ****     // TODO
+ 103:task1.c       ****     NRF_TWIM0->SHORTS = BV_BY_NAME(TWIM_SHORTS_LASTRX_STOP, Enabled);
+ 104:task1.c       **** 
+ 105:task1.c       ****     // Set the device address in the ADDRESS register.
+ 106:task1.c       ****     // TODO
+ 107:task1.c       ****     NRF_TWIM0->ADDRESS = dev_addr;
+ 108:task1.c       **** 
+ 109:task1.c       ****     // Set the number of bytes we want to receive.
+ 110:task1.c       ****     // TODO
+ 111:task1.c       ****     NRF_TWIM0->RXD.MAXCNT = n_rx_data;
+ 112:task1.c       **** 
+ 113:task1.c       ****     // Provide a pointer to a buffer where the received data can be stored.
+ 114:task1.c       ****     // TODO
+ 115:task1.c       ****     NRF_TWIM0->RXD.PTR = (uint32_t)rx_buffer;
+ 116:task1.c       **** 
+ 117:task1.c       ****     // Clear events.
+ 118:task1.c       ****     NRF_TWIM0->EVENTS_STOPPED = TWIM_EVENTS_STOPPED_EVENTS_STOPPED_NotGenerated << TWIM_EVENTS_STOP
+ 119:task1.c       ****     NRF_TWIM0->EVENTS_ERROR = TWIM_EVENTS_ERROR_EVENTS_ERROR_NotGenerated << TWIM_EVENTS_ERROR_EVEN
+ 120:task1.c       **** 
+ 121:task1.c       ****     // Start receive task.
+ 122:task1.c       ****     // TODO
+ 123:task1.c       ****     NRF_TWIM0->TASKS_STARTRX = 1;
+ 124:task1.c       **** 
+ 125:task1.c       ****     // Wait until the TWIM peripheral has stopped (STOP event after the last byte).
+ 126:task1.c       ****     while (NRF_TWIM0->EVENTS_STOPPED != TWIM_EVENTS_STOPPED_EVENTS_STOPPED_Generated)
+ 127:task1.c       ****         ;
+ 128:task1.c       **** 
+ 129:task1.c       ****     // Disable the TWIM peripheral.
+ 130:task1.c       ****     // TODO
+ 131:task1.c       ****     NRF_TWIM0->ENABLE = 0;
+ 132:task1.c       **** }
+ 133:task1.c       **** 
+ 134:task1.c       **** // Write n_data bytes of the buffer pointed to by data to the slave device with
+ 135:task1.c       **** // the address dev_addr without sending the stop condition.
+ 136:task1.c       **** // Then read n_data bytes from the slave device with the address dev_addr and store the
+ 137:task1.c       **** // data at the location pointed to by buffer.
+ 138:task1.c       **** static void twi_write_read(uint8_t dev_addr, volatile uint8_t *tx_data, unsigned int n_tx_data, vol
+ 139:task1.c       **** {
+ 140:task1.c       ****     // Enable the TWIM peripheral.
+ 141:task1.c       ****     // TODO
+ 142:task1.c       ****     NRF_TWIM0->ENABLE = 1;
+ 143:task1.c       **** 
+ 144:task1.c       ****     // Set the shortcut to start receiving after the last byte is transmitted
+ 145:task1.c       ****     // and to stop receiving after the last byte.
+ 146:task1.c       ****     // TODO
+ 147:task1.c       ****     NRF_TWIM0->SHORTS = BV_BY_NAME(TWIM_SHORTS_LASTTX_STARTRX, Enabled) | BV_BY_NAME(TWIM_SHORTS_LA
+ 148:task1.c       **** 
+ 149:task1.c       ****     // Set the device address in the ADDRESS register.
+ 150:task1.c       ****     // TODO
+ 151:task1.c       ****     NRF_TWIM0->ADDRESS = dev_addr;
+ 152:task1.c       **** 
+ 153:task1.c       ****     // Set the number of bytes we want to transmit.
+ 154:task1.c       ****     // TODO
+ 155:task1.c       ****     NRF_TWIM0->TXD.MAXCNT = n_tx_data;
+ 156:task1.c       **** 
+ 157:task1.c       ****     // Provide a pointer to a buffer where the transmit data is stored.
+ 158:task1.c       ****     // TODO
+ 159:task1.c       ****     NRF_TWIM0->TXD.PTR = (uint32_t)tx_data;
+ 160:task1.c       **** 
+ 161:task1.c       ****     // Set the number of bytes we want to receive.
+ 162:task1.c       ****     // TODO
+ 163:task1.c       ****     NRF_TWIM0->RXD.MAXCNT = n_rx_data;
+ 164:task1.c       **** 
+ 165:task1.c       ****     // Provide a pointer to a buffer where the received data can be stored.
+ 166:task1.c       ****     // TODO
+ 167:task1.c       ****     NRF_TWIM0->RXD.PTR = (uint32_t)rx_buffer;
+ 168:task1.c       **** 
+ 169:task1.c       ****     // Clear events.
+ 170:task1.c       ****     NRF_TWIM0->EVENTS_STOPPED = TWIM_EVENTS_STOPPED_EVENTS_STOPPED_NotGenerated << TWIM_EVENTS_STOP
+ 171:task1.c       ****     NRF_TWIM0->EVENTS_ERROR = TWIM_EVENTS_ERROR_EVENTS_ERROR_NotGenerated << TWIM_EVENTS_ERROR_EVEN
+ 172:task1.c       **** 
+ 173:task1.c       ****     // Start transmit task.
+ 174:task1.c       ****     // TODO
+ 175:task1.c       ****     NRF_TWIM0->TASKS_STARTTX = 1;
+ 176:task1.c       **** 
+ 177:task1.c       ****     // Wait until the TWIM peripheral has stopped (STOP event after the last byte).
+ 178:task1.c       ****     while (NRF_TWIM0->EVENTS_STOPPED != TWIM_EVENTS_STOPPED_EVENTS_STOPPED_Generated)
+ 179:task1.c       ****         ;
+ 180:task1.c       **** 
+ 181:task1.c       ****     // Disable the TWIM peripheral.
+ 182:task1.c       ****     // TODO
+ 183:task1.c       ****     NRF_TWIM0->ENABLE = 0;
+ 184:task1.c       **** }
+ 185:task1.c       **** 
+ 186:task1.c       **** //*************************************************************************
+ 187:task1.c       **** //* UART configuration.
+ 188:task1.c       **** //* 	- TX GPIO pin connection: P0.06
+ 189:task1.c       **** //* 	- baudrate: 115200 Baud (bit/s)
+ 190:task1.c       **** //* 	- hardware flow control: disabled
+ 191:task1.c       **** //* 	- stop bit(s): 1
+ 192:task1.c       **** //* 	- with no parity
+ 193:task1.c       **** //*************************************************************************
+ 194:task1.c       **** static void configure_uart(void)
+  39              		.loc 1 194 13 view .LVU2
+  40              	.LBB5:
+ 195:task1.c       **** {
+ 196:task1.c       ****     NRF_UART0->PSEL.TXD = (6 << UART_PSEL_TXD_PIN_Pos) |
+  41              		.loc 1 196 5 view .LVU3
+  42              		.loc 1 196 25 is_stmt 0 view .LVU4
+  43 0000 1249     		ldr	r1, .L4
+ 197:task1.c       ****                           (0 << UART_PSEL_TXD_PORT_Pos) |
+ 198:task1.c       ****                           (UART_PSEL_TXD_CONNECT_Connected << UART_PSEL_TXD_CONNECT_Pos);
+ 199:task1.c       ****     NRF_UART0->BAUDRATE = UART_BAUDRATE_BAUDRATE_Baud115200 << UART_BAUDRATE_BAUDRATE_Pos;
+  44              		.loc 1 199 25 view .LVU5
+  45 0002 134C     		ldr	r4, .L4+4
+  46              	.LBE5:
+  47              	.LBE4:
+  29:task1.c       ****     NRF_TWIM0->PSEL.SDA = BV_BY_NAME(TWIM_PSEL_SDA_CONNECT, Connected) | BV_BY_VALUE(TWIM_PSEL_SDA_
+  48              		.loc 1 29 25 view .LVU6
+  49 0004 134A     		ldr	r2, .L4+8
+  50              	.LBB7:
+  51              	.LBB6:
+ 196:task1.c       ****                           (0 << UART_PSEL_TXD_PORT_Pos) |
+  52              		.loc 1 196 25 view .LVU7
+  53 0006 4FF0060C 		mov	ip, #6
+  54 000a C1F80CC5 		str	ip, [r1, #1292]
+  55              		.loc 1 199 5 is_stmt 1 view .LVU8
+ 200:task1.c       ****     NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Disabled << UART_CONFIG_HWFC_Pos) |
+ 201:task1.c       ****                         (UART_CONFIG_PARITY_Excluded << UART_CONFIG_PARITY_Pos) |
+ 202:task1.c       ****                         (UART_CONFIG_STOP_One << UART_CONFIG_STOP_Pos);
+ 203:task1.c       **** 
+ 204:task1.c       ****     // Configure the TX GPIO pin according to Table 132, page 503.
+ 205:task1.c       ****     NRF_P0->PIN_CNF[6] = (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos) |
+  56              		.loc 1 205 24 is_stmt 0 view .LVU9
+  57 000e 4FF0A043 		mov	r3, #1342177280
+ 199:task1.c       ****     NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Disabled << UART_CONFIG_HWFC_Pos) |
+  58              		.loc 1 199 25 view .LVU10
+  59 0012 C1F82445 		str	r4, [r1, #1316]
+ 200:task1.c       ****     NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Disabled << UART_CONFIG_HWFC_Pos) |
+  60              		.loc 1 200 5 is_stmt 1 view .LVU11
+ 200:task1.c       ****     NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Disabled << UART_CONFIG_HWFC_Pos) |
+  61              		.loc 1 200 23 is_stmt 0 view .LVU12
+  62 0016 0024     		movs	r4, #0
+  63 0018 C1F86C45 		str	r4, [r1, #1388]
+  64              		.loc 1 205 5 is_stmt 1 view .LVU13
+  65              		.loc 1 205 24 is_stmt 0 view .LVU14
+  66 001c 0324     		movs	r4, #3
+ 206:task1.c       ****                          (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+ 207:task1.c       ****                          (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
+ 208:task1.c       ****                          (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+ 209:task1.c       ****                          (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos);
+ 210:task1.c       **** 
+ 211:task1.c       ****     // Set the output value of the GPIO pin (UART idle state).
+ 212:task1.c       ****     NRF_P0->OUTSET = GPIO_OUTSET_PIN6_Set << GPIO_OUTSET_PIN6_Pos;
+  67              		.loc 1 212 20 view .LVU15
+  68 001e 4021     		movs	r1, #64
+ 205:task1.c       ****                          (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+  69              		.loc 1 205 24 view .LVU16
+  70 0020 C3F81847 		str	r4, [r3, #1816]
+  71              		.loc 1 212 5 is_stmt 1 view .LVU17
+  72              		.loc 1 212 20 is_stmt 0 view .LVU18
+  73 0024 C3F80815 		str	r1, [r3, #1288]
+  74              	.LBE6:
+  75              	.LBE7:
+  29:task1.c       ****     NRF_TWIM0->PSEL.SDA = BV_BY_NAME(TWIM_PSEL_SDA_CONNECT, Connected) | BV_BY_VALUE(TWIM_PSEL_SDA_
+  76              		.loc 1 29 5 is_stmt 1 view .LVU19
+  29:task1.c       ****     NRF_TWIM0->PSEL.SDA = BV_BY_NAME(TWIM_PSEL_SDA_CONNECT, Connected) | BV_BY_VALUE(TWIM_PSEL_SDA_
+  77              		.loc 1 29 25 is_stmt 0 view .LVU20
+  78 0028 1B24     		movs	r4, #27
+  30:task1.c       ****     NRF_TWIM0->FREQUENCY = BV_BY_NAME(TWIM_FREQUENCY_FREQUENCY, K250);
+  79              		.loc 1 30 25 view .LVU21
+  80 002a 1A21     		movs	r1, #26
+  29:task1.c       ****     NRF_TWIM0->PSEL.SDA = BV_BY_NAME(TWIM_PSEL_SDA_CONNECT, Connected) | BV_BY_VALUE(TWIM_PSEL_SDA_
+  81              		.loc 1 29 25 view .LVU22
+  82 002c C2F80845 		str	r4, [r2, #1288]
+  30:task1.c       ****     NRF_TWIM0->FREQUENCY = BV_BY_NAME(TWIM_FREQUENCY_FREQUENCY, K250);
+  83              		.loc 1 30 5 is_stmt 1 view .LVU23
+  34:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  84              		.loc 1 34 25 is_stmt 0 view .LVU24
+  85 0030 40F20C60 		movw	r0, #1548
+  30:task1.c       ****     NRF_TWIM0->FREQUENCY = BV_BY_NAME(TWIM_FREQUENCY_FREQUENCY, K250);
+  86              		.loc 1 30 25 view .LVU25
+  87 0034 C2F80C15 		str	r1, [r2, #1292]
+  31:task1.c       **** 
+  88              		.loc 1 31 5 is_stmt 1 view .LVU26
+  31:task1.c       **** 
+  89              		.loc 1 31 26 is_stmt 0 view .LVU27
+  90 0038 4FF08061 		mov	r1, #67108864
+  91 003c C2F82415 		str	r1, [r2, #1316]
+  34:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  92              		.loc 1 34 5 is_stmt 1 view .LVU28
+  34:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  93              		.loc 1 34 25 is_stmt 0 view .LVU29
+  94 0040 C3F86C07 		str	r0, [r3, #1900]
+  41:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  95              		.loc 1 41 5 is_stmt 1 view .LVU30
+  41:task1.c       ****                           BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0D1) |
+  96              		.loc 1 41 25 is_stmt 0 view .LVU31
+  97 0044 C3F86807 		str	r0, [r3, #1896]
+  98              	.L2:
+  48:task1.c       ****         ;
+  99              		.loc 1 48 5 is_stmt 1 view .LVU32
+  48:task1.c       ****         ;
+ 100              		.loc 1 48 11 view .LVU33
+  48:task1.c       ****         ;
+ 101              		.loc 1 48 5 view .LVU34
+  48:task1.c       ****         ;
+ 102              		.loc 1 48 11 view .LVU35
+ 103 0048 FEE7     		b	.L2
+ 104              	.L5:
+ 105 004a 00BF     		.align	2
+ 106              	.L4:
+ 107 004c 00200040 		.word	1073750016
+ 108 0050 00E0D701 		.word	30924800
+ 109 0054 00300040 		.word	1073754112
+ 110              		.cfi_endproc
+ 111              	.LFE135:
+ 113              		.text
+ 114              	.Letext0:
+ 115              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 116              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 117              		.file 4 "./Include/nrf52840.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 task1.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//cc2Hta7L.s:21     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//cc2Hta7L.s:28     .text.startup.main:00000000 main
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//cc2Hta7L.s:107    .text.startup.main:0000004c $d
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.features.h.33.d554620bb17bd3b714c3fb5c268772bc
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.nrf.h.36.2c9771b922e05998cb98cd38e577d26d
+                           .group:00000000 wm4.nrf52840.h.54.2eff2f64e4f718309725743e020c1c3e
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm4.h.66.d954c01095d518cd043caf62225efced
+                           .group:00000000 wm4.cmsis_gcc.h.26.ec732d7dec3e44b4b15b499f7fbfba3f
+                           .group:00000000 wm4.core_cm4.h.186.369ba2229bf6f92b71e2ad1ae8388018
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.nrf52840.h.2760.94facbe4f0b1a63284aed08b8635f538
+                           .group:00000000 wm4.nrf52840_bitfields.h.36.6f0372e47edb7eb297e4f285382d0a6c
+                           .group:00000000 wm4.nrf51_to_nrf52840.h.36.a52984f77ed625f80506d6aa3574a54b
+                           .group:00000000 wm4.nrf52_to_nrf52840.h.36.718b4211de2aa9d86eb1b548550c2d83
+                           .group:00000000 wm4.compiler_abstraction.h.36.11adf2fa28a4f329a07fa847d09bfcb7
+                           .group:00000000 wm4.newlib.h.7.cf8eb215de583de90082131629e599f8
+                           .group:00000000 wm4.ieeefp.h.77.61a77db5804869b1dadd307a77cf78c9
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stddef.h.39.811583f327f35b0df7808fda70b062a0
+                           .group:00000000 wm4.cdefs.h.49.56fd742369e655e7e8a7e365e706e208
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.173.4903093a50a8482cb062b176ea61fac3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.078903e3d6b56074951b57c5af815ad6
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.173.1cea4f16a943c8e875db6791959c3141
+                           .group:00000000 wm4.inttypes.h.14.b28deb26920e51e0da310220ef0f9003
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+                           .group:00000000 wm4.stdarg.h.31.f7f4f3bfddce9ed034956076d59396f7
+                           .group:00000000 wm4.printf.h.60.4e905941388f8572eb1bb13f71697bea
+
+NO UNDEFINED SYMBOLS

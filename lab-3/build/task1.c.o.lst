@@ -1,0 +1,269 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "task1.c"
+  20              		.section	.text.startup.main,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB135:
+   1:task1.c       **** #include <stdint.h>
+   2:task1.c       **** #include <nrf.h>
+   3:task1.c       **** #include "printf.h"
+   4:task1.c       **** 
+   5:task1.c       **** // Helper macros to access registers.
+   6:task1.c       **** #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
+   7:task1.c       **** #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)
+   8:task1.c       **** #define BV(pos) (1u << (pos))
+   9:task1.c       **** 
+  10:task1.c       **** int main(void)
+  11:task1.c       **** {
+  30              		.loc 1 11 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  12:task1.c       ****     //*************************************************************************
+  13:task1.c       ****     //* UART configuration.
+  14:task1.c       ****     //* 	- TX GPIO pin connection: P0.06
+  15:task1.c       ****     //* 	- baudrate: 115200 Baud (bit/s)
+  16:task1.c       ****     //* 	- hardware flow control: disabled
+  17:task1.c       ****     //* 	- stop bit(s): 1
+  18:task1.c       ****     //* 	- with no parity
+  19:task1.c       ****     //*************************************************************************
+  20:task1.c       ****     // TODO
+  21:task1.c       **** 
+  22:task1.c       ****     // Configure the TX GPIO pin according to Table 132, page 503.
+  23:task1.c       ****     // TODO
+  24:task1.c       ****     NRF_UART0->PSEL.TXD = BV_BY_NAME(UART_PSEL_TXD_CONNECT, Connected) | BV_BY_VALUE(UART_PSEL_TXD_
+  35              		.loc 1 24 5 view .LVU1
+  11:task1.c       ****     //*************************************************************************
+  36              		.loc 1 11 1 is_stmt 0 view .LVU2
+  37 0000 10B4     		push	{r4}
+  38              		.cfi_def_cfa_offset 4
+  39              		.cfi_offset 4, -4
+  40              		.loc 1 24 25 view .LVU3
+  41 0002 184A     		ldr	r2, .L11
+  25:task1.c       **** 
+  26:task1.c       ****     NRF_UART0->BAUDRATE = BV_BY_NAME(UART_BAUDRATE_BAUDRATE, Baud115200);
+  42              		.loc 1 26 25 view .LVU4
+  43 0004 184C     		ldr	r4, .L11+4
+  27:task1.c       **** 
+  28:task1.c       ****     NRF_UART0->CONFIG = BV_BY_NAME(UART_CONFIG_HWFC, Disabled) | BV_BY_NAME(UART_CONFIG_PARITY, Exc
+  29:task1.c       **** 
+  30:task1.c       ****     // Set the output value of the GPIO pin (UART idle state).
+  31:task1.c       ****     // TODO
+  32:task1.c       ****     NRF_P0->OUTSET = BV(6); // idle high
+  44              		.loc 1 32 20 view .LVU5
+  45 0006 4FF0A043 		mov	r3, #1342177280
+  24:task1.c       **** 
+  46              		.loc 1 24 25 view .LVU6
+  47 000a 0620     		movs	r0, #6
+  11:task1.c       ****     //*************************************************************************
+  48              		.loc 1 11 1 view .LVU7
+  49 000c 83B0     		sub	sp, sp, #12
+  50              		.cfi_def_cfa_offset 16
+  28:task1.c       **** 
+  51              		.loc 1 28 23 view .LVU8
+  52 000e 0021     		movs	r1, #0
+  24:task1.c       **** 
+  53              		.loc 1 24 25 view .LVU9
+  54 0010 C2F80C05 		str	r0, [r2, #1292]
+  26:task1.c       **** 
+  55              		.loc 1 26 5 is_stmt 1 view .LVU10
+  26:task1.c       **** 
+  56              		.loc 1 26 25 is_stmt 0 view .LVU11
+  57 0014 C2F82445 		str	r4, [r2, #1316]
+  28:task1.c       **** 
+  58              		.loc 1 28 5 is_stmt 1 view .LVU12
+  59              		.loc 1 32 20 is_stmt 0 view .LVU13
+  60 0018 4020     		movs	r0, #64
+  33:task1.c       ****     NRF_P0->PIN_CNF[6] =
+  61              		.loc 1 33 24 view .LVU14
+  62 001a 0324     		movs	r4, #3
+  28:task1.c       **** 
+  63              		.loc 1 28 23 view .LVU15
+  64 001c C2F86C15 		str	r1, [r2, #1388]
+  32:task1.c       ****     NRF_P0->PIN_CNF[6] =
+  65              		.loc 1 32 5 is_stmt 1 view .LVU16
+  32:task1.c       ****     NRF_P0->PIN_CNF[6] =
+  66              		.loc 1 32 20 is_stmt 0 view .LVU17
+  67 0020 C3F80805 		str	r0, [r3, #1288]
+  68              		.loc 1 33 5 is_stmt 1 view .LVU18
+  69              		.loc 1 33 24 is_stmt 0 view .LVU19
+  70 0024 C3F81847 		str	r4, [r3, #1816]
+  34:task1.c       ****         BV_BY_NAME(GPIO_PIN_CNF_DIR, Output) |
+  35:task1.c       ****         BV_BY_NAME(GPIO_PIN_CNF_INPUT, Disconnect) |
+  36:task1.c       ****         BV_BY_NAME(GPIO_PIN_CNF_PULL, Disabled) |
+  37:task1.c       ****         BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1) |
+  38:task1.c       ****         BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
+  39:task1.c       **** 
+  40:task1.c       ****     // Enable the UART peripheral.
+  41:task1.c       ****     // TODO
+  42:task1.c       ****     NRF_UART0->ENABLE = BV_BY_NAME(UART_ENABLE_ENABLE, Enabled);
+  71              		.loc 1 42 5 is_stmt 1 view .LVU20
+  72              		.loc 1 42 23 is_stmt 0 view .LVU21
+  73 0028 0420     		movs	r0, #4
+  43:task1.c       **** 
+  44:task1.c       ****     // Start the UART transfer (i.e., trigger the UART start task).
+  45:task1.c       ****     // TODO
+  46:task1.c       ****     NRF_UART0->TASKS_STARTTX = 1;
+  74              		.loc 1 46 30 view .LVU22
+  75 002a 0123     		movs	r3, #1
+  42:task1.c       **** 
+  76              		.loc 1 42 23 view .LVU23
+  77 002c C2F80005 		str	r0, [r2, #1280]
+  78              		.loc 1 46 5 is_stmt 1 view .LVU24
+  47:task1.c       **** 
+  48:task1.c       ****     char ch = 0;
+  49:task1.c       ****     // run forever
+  50:task1.c       ****     while (1)
+  51:task1.c       ****     {
+  52:task1.c       ****         // Write the character into the TXD register.
+  53:task1.c       ****         // TODO
+  54:task1.c       ****         NRF_UART0->TXD = ch;
+  55:task1.c       **** 
+  56:task1.c       ****         // Wait until the end of the transmission by checking the TXRDY event.
+  57:task1.c       ****         // TODO
+  58:task1.c       **** 
+  59:task1.c       ****         while (NRF_UART0->EVENTS_TXDRDY == 0)
+  60:task1.c       ****             ;
+  61:task1.c       ****         // Reset the event.
+  62:task1.c       ****         // TODO
+  63:task1.c       ****         NRF_UART0->EVENTS_TXDRDY = 0;
+  79              		.loc 1 63 34 is_stmt 0 view .LVU25
+  80 0030 0C46     		mov	r4, r1
+  46:task1.c       **** 
+  81              		.loc 1 46 30 view .LVU26
+  82 0032 9360     		str	r3, [r2, #8]
+  48:task1.c       ****     // run forever
+  83              		.loc 1 48 5 is_stmt 1 view .LVU27
+  84              	.LVL0:
+  85              	.LBB2:
+  64:task1.c       **** 
+  65:task1.c       ****         for (volatile int i = 0; i < 10000; i++);   // a delay to see b/w frames
+  86              		.loc 1 65 36 is_stmt 0 discriminator 1 view .LVU28
+  87 0034 42F20F70 		movw	r0, #9999
+  88              	.LVL1:
+  89              	.L5:
+  90              		.loc 1 65 36 discriminator 1 view .LVU29
+  91              	.LBE2:
+  50:task1.c       ****     {
+  92              		.loc 1 50 5 is_stmt 1 view .LVU30
+  54:task1.c       **** 
+  93              		.loc 1 54 9 view .LVU31
+  94 0038 CBB2     		uxtb	r3, r1
+  54:task1.c       **** 
+  95              		.loc 1 54 24 is_stmt 0 view .LVU32
+  96 003a C2F81C35 		str	r3, [r2, #1308]
+  59:task1.c       ****             ;
+  97              		.loc 1 59 9 is_stmt 1 view .LVU33
+  98              	.L2:
+  59:task1.c       ****             ;
+  99              		.loc 1 59 41 discriminator 1 view .LVU34
+  59:task1.c       ****             ;
+ 100              		.loc 1 59 25 is_stmt 0 discriminator 1 view .LVU35
+ 101 003e D2F81C31 		ldr	r3, [r2, #284]
+  59:task1.c       ****             ;
+ 102              		.loc 1 59 41 discriminator 1 view .LVU36
+ 103 0042 002B     		cmp	r3, #0
+ 104 0044 FBD0     		beq	.L2
+  63:task1.c       **** 
+ 105              		.loc 1 63 9 is_stmt 1 view .LVU37
+  63:task1.c       **** 
+ 106              		.loc 1 63 34 is_stmt 0 view .LVU38
+ 107 0046 C2F81C41 		str	r4, [r2, #284]
+ 108              		.loc 1 65 9 is_stmt 1 view .LVU39
+ 109              	.LBB3:
+ 110              		.loc 1 65 14 view .LVU40
+ 111              		.loc 1 65 27 is_stmt 0 view .LVU41
+ 112 004a 0194     		str	r4, [sp, #4]
+ 113              		.loc 1 65 36 is_stmt 1 discriminator 1 view .LVU42
+ 114 004c 019B     		ldr	r3, [sp, #4]
+ 115 004e 8342     		cmp	r3, r0
+ 116 0050 05DC     		bgt	.L3
+ 117              	.L4:
+ 118              		.loc 1 65 46 discriminator 3 view .LVU43
+ 119 0052 019B     		ldr	r3, [sp, #4]
+ 120 0054 0133     		adds	r3, r3, #1
+ 121 0056 0193     		str	r3, [sp, #4]
+ 122              		.loc 1 65 36 discriminator 1 view .LVU44
+ 123 0058 019B     		ldr	r3, [sp, #4]
+ 124 005a 8342     		cmp	r3, r0
+ 125 005c F9DD     		ble	.L4
+ 126              	.L3:
+ 127              	.LBE3:
+  66:task1.c       **** 
+  67:task1.c       ****         // Increment the value of our character to iterate over all ASCII symbols.
+  68:task1.c       ****         ch++;
+ 128              		.loc 1 68 9 view .LVU45
+ 129              	.LVL2:
+  50:task1.c       ****     {
+ 130              		.loc 1 50 11 view .LVU46
+  54:task1.c       **** 
+ 131              		.loc 1 54 24 is_stmt 0 view .LVU47
+ 132 005e 0131     		adds	r1, r1, #1
+ 133              	.LVL3:
+  54:task1.c       **** 
+ 134              		.loc 1 54 24 view .LVU48
+ 135 0060 EAE7     		b	.L5
+ 136              	.L12:
+ 137 0062 00BF     		.align	2
+ 138              	.L11:
+ 139 0064 00200040 		.word	1073750016
+ 140 0068 00E0D701 		.word	30924800
+ 141              		.cfi_endproc
+ 142              	.LFE135:
+ 144              		.text
+ 145              	.Letext0:
+ 146              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 147              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 148              		.file 4 "./Include/nrf52840.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 task1.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccAoW88p.s:21     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccAoW88p.s:28     .text.startup.main:00000000 main
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccAoW88p.s:139    .text.startup.main:00000064 $d
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.features.h.33.d554620bb17bd3b714c3fb5c268772bc
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.nrf.h.36.2c9771b922e05998cb98cd38e577d26d
+                           .group:00000000 wm4.nrf52840.h.54.2eff2f64e4f718309725743e020c1c3e
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm4.h.66.d954c01095d518cd043caf62225efced
+                           .group:00000000 wm4.cmsis_gcc.h.26.ec732d7dec3e44b4b15b499f7fbfba3f
+                           .group:00000000 wm4.core_cm4.h.186.369ba2229bf6f92b71e2ad1ae8388018
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.nrf52840.h.2760.94facbe4f0b1a63284aed08b8635f538
+                           .group:00000000 wm4.nrf52840_bitfields.h.36.6f0372e47edb7eb297e4f285382d0a6c
+                           .group:00000000 wm4.nrf51_to_nrf52840.h.36.a52984f77ed625f80506d6aa3574a54b
+                           .group:00000000 wm4.nrf52_to_nrf52840.h.36.718b4211de2aa9d86eb1b548550c2d83
+                           .group:00000000 wm4.compiler_abstraction.h.36.11adf2fa28a4f329a07fa847d09bfcb7
+                           .group:00000000 wm4.stdarg.h.31.f7f4f3bfddce9ed034956076d59396f7
+                           .group:00000000 wm4.stddef.h.39.811583f327f35b0df7808fda70b062a0
+                           .group:00000000 wm4.printf.h.60.4e905941388f8572eb1bb13f71697bea
+
+NO UNDEFINED SYMBOLS
