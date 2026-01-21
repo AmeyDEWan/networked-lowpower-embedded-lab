@@ -1,0 +1,1128 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "main.c"
+  20              		.section	.rodata.main.str1.4,"aMS",%progbits,1
+  21              		.align	2
+  22              	.LC0:
+  23 0000 57656C63 		.ascii	"Welcome to the Embedded whack a 'led'\012\000"
+  23      6F6D6520 
+  23      746F2074 
+  23      68652045 
+  23      6D626564 
+  24 0027 00       		.align	2
+  25              	.LC1:
+  26 0028 41766720 		.ascii	"Avg res time: %.2f ms \012, Total Points: %d \012\000"
+  26      72657320 
+  26      74696D65 
+  26      3A20252E 
+  26      3266206D 
+  27              		.align	2
+  28              	.LC2:
+  29 0054 47616D65 		.ascii	"Game Over! Press 'reset' to start game again.\012\000"
+  29      204F7665 
+  29      72212050 
+  29      72657373 
+  29      20277265 
+  30              		.section	.text.startup.main,"ax",%progbits
+  31              		.align	1
+  32              		.p2align 2,,3
+  33              		.global	main
+  34              		.syntax unified
+  35              		.thumb
+  36              		.thumb_func
+  38              	main:
+  39              	.LFB138:
+   1:main.c        **** #include "printf.h"
+   2:main.c        **** #include "helper.h"
+   3:main.c        **** 
+   4:main.c        **** void store_response_time(uint16_t response_time);
+   5:main.c        **** float get_average_response_time(void);
+   6:main.c        **** 
+   7:main.c        **** // SCORE & RESPONSE_TIME
+   8:main.c        **** 
+   9:main.c        **** game_state_t current_game_state = STATE_START;
+  10:main.c        **** 
+  11:main.c        **** int main(void)
+  12:main.c        **** {
+  40              		.loc 1 12 1 view -0
+  41              		.cfi_startproc
+  42              		@ args = 0, pretend = 0, frame = 64
+  43              		@ frame_needed = 0, uses_anonymous_args = 0
+  13:main.c        ****     // Configure LEDs
+  14:main.c        ****     configure_leds();
+  44              		.loc 1 14 5 view .LVU1
+  12:main.c        ****     // Configure LEDs
+  45              		.loc 1 12 1 is_stmt 0 view .LVU2
+  46 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  47              		.cfi_def_cfa_offset 36
+  48              		.cfi_offset 4, -36
+  49              		.cfi_offset 5, -32
+  50              		.cfi_offset 6, -28
+  51              		.cfi_offset 7, -24
+  52              		.cfi_offset 8, -20
+  53              		.cfi_offset 9, -16
+  54              		.cfi_offset 10, -12
+  55              		.cfi_offset 11, -8
+  56              		.cfi_offset 14, -4
+  57 0004 95B0     		sub	sp, sp, #84
+  58              		.cfi_def_cfa_offset 120
+  59              		.loc 1 14 5 view .LVU3
+  60 0006 FFF7FEFF 		bl	configure_leds
+  61              	.LVL0:
+  15:main.c        ****     // Configure buttons
+  16:main.c        ****     configure_buttons();
+  62              		.loc 1 16 5 is_stmt 1 view .LVU4
+  63 000a FFF7FEFF 		bl	configure_buttons
+  64              	.LVL1:
+  17:main.c        ****     // Configure the UART peripheral for printf.
+  18:main.c        ****     configure_uart();
+  65              		.loc 1 18 5 view .LVU5
+  66 000e FFF7FEFF 		bl	configure_uart
+  67              	.LVL2:
+  19:main.c        ****     // Configure RNG peripheral
+  20:main.c        ****     configure_rng();
+  68              		.loc 1 20 5 view .LVU6
+  69 0012 FFF7FEFF 		bl	configure_rng
+  70              	.LVL3:
+  21:main.c        ****     // Configure timer for millis
+  22:main.c        ****     configure_milli_timer();
+  71              		.loc 1 22 5 view .LVU7
+  72 0016 FFF7FEFF 		bl	configure_milli_timer
+  73              	.LVL4:
+  23:main.c        **** 
+  24:main.c        ****     // TODO: Implement the game logic
+  25:main.c        **** 
+  26:main.c        ****     // Run forever.
+  27:main.c        ****     uint32_t round_count = 0;
+  74              		.loc 1 27 5 view .LVU8
+  75              		.loc 1 27 5 is_stmt 0 view .LVU9
+  76 001a DFF8A081 		ldr	r8, .L49+28
+  77 001e DFF8A0A1 		ldr	r10, .L49+32
+  78 0022 DFF8A091 		ldr	r9, .L49+36
+  79 0026 5E4F     		ldr	r7, .L49
+  80              	.LBB16:
+  81              	.LBB17:
+  28:main.c        ****     while (1)
+  29:main.c        ****     {
+  30:main.c        ****         // TODO: Implement the game logic
+  31:main.c        **** 
+  32:main.c        ****         switch (current_game_state)
+  33:main.c        ****         {
+  34:main.c        ****         case STATE_START:
+  35:main.c        ****             round_count = 0;
+  36:main.c        ****             current_round_points = 0;
+  37:main.c        ****             response_time_index = 0;
+  38:main.c        ****             const char *welcome_msg = "Welcome to the Embedded whack a 'led'\n";
+  39:main.c        **** 
+  40:main.c        ****             for (int i = 0; welcome_msg[i] != '\0'; i++)
+  41:main.c        ****             {
+  42:main.c        ****                 NRF_UART0->TXD = welcome_msg[i];
+  82              		.loc 1 42 32 view .LVU10
+  83 0028 5E4E     		ldr	r6, .L49+4
+  84              	.LBE17:
+  85              	.LBE16:
+  27:main.c        ****     while (1)
+  86              		.loc 1 27 14 view .LVU11
+  87 002a 0024     		movs	r4, #0
+  88              	.LVL5:
+  89              	.L27:
+  32:main.c        ****         {
+  90              		.loc 1 32 9 view .LVU12
+  91 002c 98F80010 		ldrb	r1, [r8]	@ zero_extendqisi2
+  92 0030 0029     		cmp	r1, #0
+  93 0032 56D0     		beq	.L2
+  94 0034 0129     		cmp	r1, #1
+  95 0036 00F09280 		beq	.L3
+  96 003a 0229     		cmp	r1, #2
+  97 003c 67D0     		beq	.L4
+  98 003e 0329     		cmp	r1, #3
+  99 0040 00D0     		beq	.L5
+ 100              	.L6:
+ 101              	.LVL6:
+  28:main.c        ****     while (1)
+ 102              		.loc 1 28 5 is_stmt 1 view .LVU13
+  32:main.c        ****         {
+ 103              		.loc 1 32 9 view .LVU14
+  28:main.c        ****     while (1)
+ 104              		.loc 1 28 5 view .LVU15
+  32:main.c        ****         {
+ 105              		.loc 1 32 9 view .LVU16
+ 106 0042 FEE7     		b	.L6
+ 107              	.LVL7:
+ 108              	.L5:
+  28:main.c        ****     while (1)
+ 109              		.loc 1 28 5 view .LVU17
+  32:main.c        ****         {
+ 110              		.loc 1 32 9 view .LVU18
+ 111              	.LBB37:
+  43:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+  44:main.c        ****                     ;
+  45:main.c        ****                 NRF_UART0->EVENTS_TXDRDY = 0;
+  46:main.c        ****             }
+  47:main.c        **** 
+  48:main.c        ****             current_game_state = STATE_WAIT;
+  49:main.c        ****             break;
+  50:main.c        ****         case STATE_WAIT:
+  51:main.c        ****         {
+  52:main.c        ****             // a random delay
+  53:main.c        **** 
+  54:main.c        ****             if (round_count == MAX_RESPONSE_TIMES)
+  55:main.c        ****             {
+  56:main.c        ****                 current_game_state = STATE_END;
+  57:main.c        ****                 break;
+  58:main.c        ****             }
+  59:main.c        **** 
+  60:main.c        ****             uint16_t random_num = get_rng_value();
+  61:main.c        ****             wait_millis(random_num << 3);
+  62:main.c        ****             current_game_state = STATE_ACTIVE;
+  63:main.c        ****             round_count++;
+  64:main.c        ****             break;
+  65:main.c        ****         }
+  66:main.c        ****         case STATE_ACTIVE:
+  67:main.c        ****         {
+  68:main.c        ****             // main game logic
+  69:main.c        **** 
+  70:main.c        ****             // turn on random led
+  71:main.c        ****             uint16_t random_num = get_rng_value();
+  72:main.c        ****             uint16_t led_num = random_num >> 6;
+  73:main.c        ****             set_led(led_num, ON);
+  74:main.c        **** 
+  75:main.c        ****             uint32_t start_ms = get_millis();
+  76:main.c        ****             is_btn_pressed = false;
+  77:main.c        **** 
+  78:main.c        ****             // waiting for btn press in MAXIMUM_BUTTON_TIME time block
+  79:main.c        ****             while ((get_millis() - start_ms <= MAXIMUM_BUTTON_TIME) && !is_btn_pressed)
+  80:main.c        ****             {
+  81:main.c        ****                 // do nothing
+  82:main.c        ****             }
+  83:main.c        **** 
+  84:main.c        ****             // reset LED state
+  85:main.c        ****             set_led(led_num, OFF);
+  86:main.c        **** 
+  87:main.c        ****             if (!is_btn_pressed)
+  88:main.c        ****             { // loop exit due to timeout
+  89:main.c        ****                 handle_score(MISS);
+  90:main.c        ****             }
+  91:main.c        ****             else if (is_btn_pressed)
+  92:main.c        ****             { // loop exit due to btn_pressed withing window
+  93:main.c        ****                 uint32_t current_time_ms = get_millis();
+  94:main.c        ****                 uint32_t current_response_time_ms = (current_time_ms - start_ms);
+  95:main.c        **** 
+  96:main.c        ****                 btn_t btn_pressed = which_button_pressed();
+  97:main.c        **** 
+  98:main.c        ****                 if (btn_pressed != led_num)
+  99:main.c        ****                 {
+ 100:main.c        ****                     handle_score(MISS);
+ 101:main.c        ****                     store_response_time(current_response_time_ms);
+ 102:main.c        ****                 }
+ 103:main.c        ****                 else if (current_response_time_ms <= INTERVAL_FOR_SCORING_POINTS)
+ 104:main.c        ****                 {
+ 105:main.c        ****                     handle_score(HIT);
+ 106:main.c        ****                     store_response_time(current_response_time_ms);
+ 107:main.c        ****                 }
+ 108:main.c        ****                 else // 700ms < response time < 2000ms
+ 109:main.c        ****                 {
+ 110:main.c        ****                     handle_score(LATE_HIT);
+ 111:main.c        ****                 }
+ 112:main.c        ****             }
+ 113:main.c        ****             current_game_state = STATE_WAIT;
+ 114:main.c        ****             break;
+ 115:main.c        ****         }
+ 116:main.c        ****         case STATE_END:
+ 117:main.c        ****             // show response time on terminal via UART
+ 118:main.c        ****             float user_response_time = get_average_response_time();
+ 112              		.loc 1 118 13 view .LVU19
+ 113              	.LBB18:
+ 114              	.LBI18:
+ 119:main.c        ****             response_time_index = 0;
+ 120:main.c        ****             // sending byte by byte or convert to character array
+ 121:main.c        ****             char buffer[64];
+ 122:main.c        **** 
+ 123:main.c        ****             snprintf(buffer, sizeof(buffer), "Avg res time: %.2f ms \n, Total Points: %d \n", user_
+ 124:main.c        **** 
+ 125:main.c        ****             for (int i = 0; buffer[i] != '\0'; i++)
+ 126:main.c        ****             {
+ 127:main.c        ****                 NRF_UART0->TXD = buffer[i];
+ 128:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 129:main.c        ****                     ;
+ 130:main.c        ****                 NRF_UART0->EVENTS_TXDRDY = 0;
+ 131:main.c        ****             }
+ 132:main.c        **** 
+ 133:main.c        ****             const char *reset_msg = "Game Over! Press 'reset' to start game again.\n";
+ 134:main.c        ****             for (int i = 0; reset_msg[i] != '\0'; i++)
+ 135:main.c        ****             {
+ 136:main.c        ****                 NRF_UART0->TXD = reset_msg[i];
+ 137:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 138:main.c        ****                     ;
+ 139:main.c        ****                 NRF_UART0->EVENTS_TXDRDY = 0;
+ 140:main.c        ****             }
+ 141:main.c        **** 
+ 142:main.c        ****             while(1) {
+ 143:main.c        ****                 __WFI();
+ 144:main.c        ****             }
+ 145:main.c        **** 
+ 146:main.c        ****             current_game_state = STATE_START;
+ 147:main.c        ****             break;
+ 148:main.c        ****         }
+ 149:main.c        ****     }
+ 150:main.c        ****     return 0;
+ 151:main.c        **** }
+ 152:main.c        **** 
+ 153:main.c        **** void store_response_time(uint16_t response_time)
+ 154:main.c        **** {
+ 155:main.c        ****     if (response_time_index >= MAX_RESPONSE_TIMES)
+ 156:main.c        ****     {
+ 157:main.c        ****         response_time_index = 0;
+ 158:main.c        ****     }
+ 159:main.c        ****     response_times[response_time_index++] = response_time;
+ 160:main.c        **** }
+ 161:main.c        **** 
+ 162:main.c        **** float get_average_response_time(void)
+ 115              		.loc 1 162 7 view .LVU20
+ 116              	.LBB19:
+ 163:main.c        **** {
+ 164:main.c        ****     float average_response_time = 0;
+ 117              		.loc 1 164 5 view .LVU21
+ 165:main.c        ****     if (response_time_index > 0)
+ 118              		.loc 1 165 5 view .LVU22
+ 119              		.loc 1 165 29 is_stmt 0 view .LVU23
+ 120 0044 99F80020 		ldrb	r2, [r9]	@ zero_extendqisi2
+ 121              		.loc 1 165 8 view .LVU24
+ 122 0048 002A     		cmp	r2, #0
+ 123 004a 00F09080 		beq	.L29
+ 124 004e 564B     		ldr	r3, .L49+8
+ 164:main.c        ****     if (response_time_index > 0)
+ 125              		.loc 1 164 11 view .LVU25
+ 126 0050 9FED567A 		vldr.32	s14, .L49+12
+ 127 0054 03EB4206 		add	r6, r3, r2, lsl #1
+ 128              	.LVL8:
+ 129              	.L19:
+ 130              	.LBB20:
+ 166:main.c        ****     {
+ 167:main.c        ****         for (uint8_t i = 0; i < response_time_index; i++)
+ 168:main.c        ****         {
+ 169:main.c        ****             average_response_time += response_times[i];
+ 131              		.loc 1 169 13 is_stmt 1 view .LVU26
+ 132              		.loc 1 169 52 is_stmt 0 view .LVU27
+ 133 0058 33F8021B 		ldrh	r1, [r3], #2
+ 134              	.LVL9:
+ 135              		.loc 1 169 52 view .LVU28
+ 136 005c 07EE901A 		vmov	s15, r1	@ int
+ 137              		.loc 1 169 35 view .LVU29
+ 138 0060 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 167:main.c        ****         {
+ 139              		.loc 1 167 31 discriminator 1 view .LVU30
+ 140 0064 9E42     		cmp	r6, r3
+ 141              		.loc 1 169 35 view .LVU31
+ 142 0066 37EE277A 		vadd.f32	s14, s14, s15
+ 143              	.LVL10:
+ 167:main.c        ****         {
+ 144              		.loc 1 167 55 is_stmt 1 discriminator 3 view .LVU32
+ 167:main.c        ****         {
+ 145              		.loc 1 167 31 discriminator 1 view .LVU33
+ 146 006a F5D1     		bne	.L19
+ 147              	.LBE20:
+ 170:main.c        ****         }
+ 171:main.c        ****         average_response_time /= response_time_index;
+ 148              		.loc 1 171 9 view .LVU34
+ 149              		.loc 1 171 31 is_stmt 0 view .LVU35
+ 150 006c 07EE902A 		vmov	s15, r2	@ int
+ 151 0070 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 152 0074 C7EE277A 		vdiv.f32	s15, s14, s15
+ 153 0078 17EE900A 		vmov	r0, s15
+ 154              	.LVL11:
+ 155              	.L18:
+ 172:main.c        ****     }
+ 173:main.c        ****     return average_response_time;
+ 156              		.loc 1 173 5 is_stmt 1 view .LVU36
+ 157              		.loc 1 173 5 is_stmt 0 view .LVU37
+ 158              	.LBE19:
+ 159              	.LBE18:
+ 119:main.c        ****             // sending byte by byte or convert to character array
+ 160              		.loc 1 119 13 is_stmt 1 view .LVU38
+ 123:main.c        **** 
+ 161              		.loc 1 123 13 is_stmt 0 view .LVU39
+ 162 007c DAF80030 		ldr	r3, [r10]
+ 163 0080 0293     		str	r3, [sp, #8]
+ 119:main.c        ****             // sending byte by byte or convert to character array
+ 164              		.loc 1 119 33 view .LVU40
+ 165 0082 0024     		movs	r4, #0
+ 166 0084 89F80040 		strb	r4, [r9]
+ 121:main.c        **** 
+ 167              		.loc 1 121 13 is_stmt 1 view .LVU41
+ 123:main.c        **** 
+ 168              		.loc 1 123 13 view .LVU42
+ 169 0088 FFF7FEFF 		bl	__aeabi_f2d
+ 170              	.LVL12:
+ 123:main.c        **** 
+ 171              		.loc 1 123 13 is_stmt 0 view .LVU43
+ 172 008c 484A     		ldr	r2, .L49+16
+ 173 008e CDE90001 		strd	r0, [sp]
+ 174 0092 4021     		movs	r1, #64
+ 175 0094 04A8     		add	r0, sp, #16
+ 176 0096 FFF7FEFF 		bl	snprintf_
+ 177              	.LVL13:
+ 125:main.c        ****             {
+ 178              		.loc 1 125 13 is_stmt 1 view .LVU44
+ 179              	.LBB22:
+ 125:main.c        ****             {
+ 180              		.loc 1 125 18 view .LVU45
+ 125:main.c        ****             {
+ 181              		.loc 1 125 39 discriminator 1 view .LVU46
+ 125:main.c        ****             {
+ 182              		.loc 1 125 35 is_stmt 0 discriminator 1 view .LVU47
+ 183 009a 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+ 125:main.c        ****             {
+ 184              		.loc 1 125 39 discriminator 1 view .LVU48
+ 185 009e 6BB1     		cbz	r3, .L24
+ 127:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 186              		.loc 1 127 32 view .LVU49
+ 187 00a0 404A     		ldr	r2, .L49+4
+ 188 00a2 04A9     		add	r1, sp, #16
+ 189              	.LVL14:
+ 190              	.L23:
+ 127:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 191              		.loc 1 127 17 is_stmt 1 view .LVU50
+ 127:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 192              		.loc 1 127 32 is_stmt 0 view .LVU51
+ 193 00a4 C2F81C35 		str	r3, [r2, #1308]
+ 128:main.c        ****                     ;
+ 194              		.loc 1 128 17 is_stmt 1 view .LVU52
+ 195              	.L22:
+ 128:main.c        ****                     ;
+ 196              		.loc 1 128 49 discriminator 1 view .LVU53
+ 128:main.c        ****                     ;
+ 197              		.loc 1 128 33 is_stmt 0 discriminator 1 view .LVU54
+ 198 00a8 D2F81C31 		ldr	r3, [r2, #284]
+ 128:main.c        ****                     ;
+ 199              		.loc 1 128 49 discriminator 1 view .LVU55
+ 200 00ac 002B     		cmp	r3, #0
+ 201 00ae FBD0     		beq	.L22
+ 130:main.c        ****             }
+ 202              		.loc 1 130 17 is_stmt 1 view .LVU56
+ 130:main.c        ****             }
+ 203              		.loc 1 130 42 is_stmt 0 view .LVU57
+ 204 00b0 C2F81C41 		str	r4, [r2, #284]
+ 125:main.c        ****             {
+ 205              		.loc 1 125 49 is_stmt 1 discriminator 2 view .LVU58
+ 206              	.LVL15:
+ 125:main.c        ****             {
+ 207              		.loc 1 125 39 discriminator 1 view .LVU59
+ 125:main.c        ****             {
+ 208              		.loc 1 125 35 is_stmt 0 discriminator 1 view .LVU60
+ 209 00b4 11F8013F 		ldrb	r3, [r1, #1]!	@ zero_extendqisi2
+ 210              	.LVL16:
+ 125:main.c        ****             {
+ 211              		.loc 1 125 39 discriminator 1 view .LVU61
+ 212 00b8 002B     		cmp	r3, #0
+ 213 00ba F3D1     		bne	.L23
+ 214              	.LVL17:
+ 215              	.L24:
+ 125:main.c        ****             {
+ 216              		.loc 1 125 39 discriminator 1 view .LVU62
+ 217              	.LBE22:
+ 218              	.LBB23:
+ 134:main.c        ****             {
+ 219              		.loc 1 134 42 is_stmt 1 discriminator 1 view .LVU63
+ 220 00bc 3D49     		ldr	r1, .L49+20
+ 136:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 221              		.loc 1 136 32 is_stmt 0 view .LVU64
+ 222 00be 394A     		ldr	r2, .L49+4
+ 134:main.c        ****             {
+ 223              		.loc 1 134 38 discriminator 1 view .LVU65
+ 224 00c0 4723     		movs	r3, #71
+ 139:main.c        ****             }
+ 225              		.loc 1 139 42 view .LVU66
+ 226 00c2 0020     		movs	r0, #0
+ 227              	.LVL18:
+ 228              	.L21:
+ 136:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 229              		.loc 1 136 17 is_stmt 1 view .LVU67
+ 136:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 230              		.loc 1 136 32 is_stmt 0 view .LVU68
+ 231 00c4 C2F81C35 		str	r3, [r2, #1308]
+ 137:main.c        ****                     ;
+ 232              		.loc 1 137 17 is_stmt 1 view .LVU69
+ 233              	.L25:
+ 137:main.c        ****                     ;
+ 234              		.loc 1 137 49 discriminator 1 view .LVU70
+ 137:main.c        ****                     ;
+ 235              		.loc 1 137 33 is_stmt 0 discriminator 1 view .LVU71
+ 236 00c8 D2F81C31 		ldr	r3, [r2, #284]
+ 137:main.c        ****                     ;
+ 237              		.loc 1 137 49 discriminator 1 view .LVU72
+ 238 00cc 002B     		cmp	r3, #0
+ 239 00ce FBD0     		beq	.L25
+ 139:main.c        ****             }
+ 240              		.loc 1 139 17 is_stmt 1 view .LVU73
+ 139:main.c        ****             }
+ 241              		.loc 1 139 42 is_stmt 0 view .LVU74
+ 242 00d0 C2F81C01 		str	r0, [r2, #284]
+ 134:main.c        ****             {
+ 243              		.loc 1 134 52 is_stmt 1 discriminator 2 view .LVU75
+ 244              	.LVL19:
+ 134:main.c        ****             {
+ 245              		.loc 1 134 42 discriminator 1 view .LVU76
+ 134:main.c        ****             {
+ 246              		.loc 1 134 38 is_stmt 0 discriminator 1 view .LVU77
+ 247 00d4 11F8013F 		ldrb	r3, [r1, #1]!	@ zero_extendqisi2
+ 248              	.LVL20:
+ 134:main.c        ****             {
+ 249              		.loc 1 134 42 discriminator 1 view .LVU78
+ 250 00d8 002B     		cmp	r3, #0
+ 251 00da F3D1     		bne	.L21
+ 252              	.L26:
+ 253              	.LBE23:
+ 142:main.c        ****                 __WFI();
+ 254              		.loc 1 142 13 is_stmt 1 view .LVU79
+ 143:main.c        ****             }
+ 255              		.loc 1 143 17 discriminator 1 view .LVU80
+ 256              		.syntax unified
+ 257              	@ 143 "main.c" 1
+ 258 00dc 30BF     		wfi
+ 259              	@ 0 "" 2
+ 142:main.c        ****                 __WFI();
+ 260              		.loc 1 142 18 view .LVU81
+ 142:main.c        ****                 __WFI();
+ 261              		.loc 1 142 13 view .LVU82
+ 143:main.c        ****             }
+ 262              		.loc 1 143 17 discriminator 1 view .LVU83
+ 263              	@ 143 "main.c" 1
+ 264 00de 30BF     		wfi
+ 265              	@ 0 "" 2
+ 142:main.c        ****                 __WFI();
+ 266              		.loc 1 142 18 view .LVU84
+ 267              		.thumb
+ 268              		.syntax unified
+ 269 00e0 FCE7     		b	.L26
+ 270              	.LVL21:
+ 271              	.L2:
+ 142:main.c        ****                 __WFI();
+ 272              		.loc 1 142 18 is_stmt 0 view .LVU85
+ 273              	.LBE37:
+  28:main.c        ****     {
+ 274              		.loc 1 28 5 is_stmt 1 view .LVU86
+  32:main.c        ****         {
+ 275              		.loc 1 32 9 view .LVU87
+ 276              	.LBB38:
+  35:main.c        ****             current_round_points = 0;
+ 277              		.loc 1 35 13 view .LVU88
+  36:main.c        ****             response_time_index = 0;
+ 278              		.loc 1 36 13 view .LVU89
+ 279 00e2 3548     		ldr	r0, .L49+24
+  36:main.c        ****             response_time_index = 0;
+ 280              		.loc 1 36 34 is_stmt 0 view .LVU90
+ 281 00e4 CAF80010 		str	r1, [r10]
+  37:main.c        ****             const char *welcome_msg = "Welcome to the Embedded whack a 'led'\n";
+ 282              		.loc 1 37 13 is_stmt 1 view .LVU91
+  37:main.c        ****             const char *welcome_msg = "Welcome to the Embedded whack a 'led'\n";
+ 283              		.loc 1 37 33 is_stmt 0 view .LVU92
+ 284 00e8 89F80010 		strb	r1, [r9]
+  38:main.c        **** 
+ 285              		.loc 1 38 13 is_stmt 1 view .LVU93
+ 286              	.LVL22:
+  40:main.c        ****             {
+ 287              		.loc 1 40 13 view .LVU94
+ 288              	.LBB24:
+  40:main.c        ****             {
+ 289              		.loc 1 40 18 view .LVU95
+  40:main.c        ****             {
+ 290              		.loc 1 40 44 discriminator 1 view .LVU96
+  40:main.c        ****             {
+ 291              		.loc 1 40 40 is_stmt 0 discriminator 1 view .LVU97
+ 292 00ec 5724     		movs	r4, #87
+ 293              	.LVL23:
+ 294              	.L8:
+  42:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 295              		.loc 1 42 17 is_stmt 1 view .LVU98
+  42:main.c        ****                 while (NRF_UART0->EVENTS_TXDRDY == 0)
+ 296              		.loc 1 42 32 is_stmt 0 view .LVU99
+ 297 00ee C6F81C45 		str	r4, [r6, #1308]
+  43:main.c        ****                     ;
+ 298              		.loc 1 43 17 is_stmt 1 view .LVU100
+ 299              	.L7:
+  43:main.c        ****                     ;
+ 300              		.loc 1 43 49 discriminator 1 view .LVU101
+  43:main.c        ****                     ;
+ 301              		.loc 1 43 33 is_stmt 0 discriminator 1 view .LVU102
+ 302 00f2 D6F81C31 		ldr	r3, [r6, #284]
+  43:main.c        ****                     ;
+ 303              		.loc 1 43 49 discriminator 1 view .LVU103
+ 304 00f6 002B     		cmp	r3, #0
+ 305 00f8 FBD0     		beq	.L7
+  45:main.c        ****             }
+ 306              		.loc 1 45 17 is_stmt 1 view .LVU104
+  45:main.c        ****             }
+ 307              		.loc 1 45 42 is_stmt 0 view .LVU105
+ 308 00fa C6F81C11 		str	r1, [r6, #284]
+  40:main.c        ****             {
+ 309              		.loc 1 40 54 is_stmt 1 discriminator 2 view .LVU106
+ 310              	.LVL24:
+  40:main.c        ****             {
+ 311              		.loc 1 40 44 discriminator 1 view .LVU107
+  40:main.c        ****             {
+ 312              		.loc 1 40 40 is_stmt 0 discriminator 1 view .LVU108
+ 313 00fe 10F8014F 		ldrb	r4, [r0, #1]!	@ zero_extendqisi2
+ 314              	.LVL25:
+  40:main.c        ****             {
+ 315              		.loc 1 40 44 discriminator 1 view .LVU109
+ 316 0102 002C     		cmp	r4, #0
+ 317 0104 F3D1     		bne	.L8
+ 318              	.LVL26:
+ 319              	.L13:
+  40:main.c        ****             {
+ 320              		.loc 1 40 44 discriminator 1 view .LVU110
+ 321              	.LBE24:
+ 322              	.LBB25:
+ 113:main.c        ****             break;
+ 323              		.loc 1 113 13 is_stmt 1 view .LVU111
+ 114:main.c        ****         }
+ 324              		.loc 1 114 13 view .LVU112
+ 325 0106 0123     		movs	r3, #1
+ 326              	.L9:
+ 327              	.LBE25:
+  48:main.c        ****             break;
+ 328              		.loc 1 48 32 is_stmt 0 view .LVU113
+ 329 0108 88F80030 		strb	r3, [r8]
+ 330              	.LVL27:
+  48:main.c        ****             break;
+ 331              		.loc 1 48 32 view .LVU114
+ 332 010c 8EE7     		b	.L27
+ 333              	.LVL28:
+ 334              	.L4:
+  48:main.c        ****             break;
+ 335              		.loc 1 48 32 view .LVU115
+ 336              	.LBE38:
+  28:main.c        ****     {
+ 337              		.loc 1 28 5 is_stmt 1 view .LVU116
+  32:main.c        ****         {
+ 338              		.loc 1 32 9 view .LVU117
+ 339              	.LBB39:
+ 340              	.LBB31:
+  71:main.c        ****             uint16_t led_num = random_num >> 6;
+ 341              		.loc 1 71 13 view .LVU118
+  71:main.c        ****             uint16_t led_num = random_num >> 6;
+ 342              		.loc 1 71 35 is_stmt 0 view .LVU119
+ 343 010e FFF7FEFF 		bl	get_rng_value
+ 344              	.LVL29:
+  72:main.c        ****             set_led(led_num, ON);
+ 345              		.loc 1 72 13 is_stmt 1 view .LVU120
+  72:main.c        ****             set_led(led_num, ON);
+ 346              		.loc 1 72 22 is_stmt 0 view .LVU121
+ 347 0112 C0F38F1B 		ubfx	fp, r0, #6, #16
+ 348              	.LVL30:
+  73:main.c        **** 
+ 349              		.loc 1 73 13 is_stmt 1 view .LVU122
+ 350 0116 0121     		movs	r1, #1
+ 351 0118 5846     		mov	r0, fp
+ 352              	.LVL31:
+  73:main.c        **** 
+ 353              		.loc 1 73 13 is_stmt 0 view .LVU123
+ 354 011a FFF7FEFF 		bl	set_led
+ 355              	.LVL32:
+  75:main.c        ****             is_btn_pressed = false;
+ 356              		.loc 1 75 13 is_stmt 1 view .LVU124
+  75:main.c        ****             is_btn_pressed = false;
+ 357              		.loc 1 75 33 is_stmt 0 view .LVU125
+ 358 011e FFF7FEFF 		bl	get_millis
+ 359              	.LVL33:
+  76:main.c        **** 
+ 360              		.loc 1 76 28 view .LVU126
+ 361 0122 0023     		movs	r3, #0
+  75:main.c        ****             is_btn_pressed = false;
+ 362              		.loc 1 75 33 view .LVU127
+ 363 0124 0546     		mov	r5, r0
+ 364              	.LVL34:
+  76:main.c        **** 
+ 365              		.loc 1 76 13 is_stmt 1 view .LVU128
+  76:main.c        **** 
+ 366              		.loc 1 76 28 is_stmt 0 view .LVU129
+ 367 0126 3B70     		strb	r3, [r7]
+  79:main.c        ****             {
+ 368              		.loc 1 79 13 is_stmt 1 view .LVU130
+  79:main.c        ****             {
+ 369              		.loc 1 79 19 is_stmt 0 view .LVU131
+ 370 0128 01E0     		b	.L11
+ 371              	.LVL35:
+ 372              	.L46:
+  79:main.c        ****             {
+ 373              		.loc 1 79 69 discriminator 1 view .LVU132
+ 374 012a 3B78     		ldrb	r3, [r7]	@ zero_extendqisi2
+ 375 012c 2BB9     		cbnz	r3, .L10
+ 376              	.L11:
+  82:main.c        **** 
+ 377              		.loc 1 82 13 is_stmt 1 view .LVU133
+  79:main.c        ****             {
+ 378              		.loc 1 79 69 discriminator 2 view .LVU134
+  79:main.c        ****             {
+ 379              		.loc 1 79 21 is_stmt 0 discriminator 2 view .LVU135
+ 380 012e FFF7FEFF 		bl	get_millis
+ 381              	.LVL36:
+  79:main.c        ****             {
+ 382              		.loc 1 79 34 discriminator 2 view .LVU136
+ 383 0132 401B     		subs	r0, r0, r5
+  79:main.c        ****             {
+ 384              		.loc 1 79 69 discriminator 2 view .LVU137
+ 385 0134 B0F5FA6F 		cmp	r0, #2000
+ 386 0138 F7D9     		bls	.L46
+ 387              	.L10:
+  85:main.c        **** 
+ 388              		.loc 1 85 13 is_stmt 1 view .LVU138
+ 389 013a 5846     		mov	r0, fp
+ 390 013c 0021     		movs	r1, #0
+ 391 013e FFF7FEFF 		bl	set_led
+ 392              	.LVL37:
+  87:main.c        ****             { // loop exit due to timeout
+ 393              		.loc 1 87 13 view .LVU139
+  87:main.c        ****             { // loop exit due to timeout
+ 394              		.loc 1 87 16 is_stmt 0 view .LVU140
+ 395 0142 3878     		ldrb	r0, [r7]	@ zero_extendqisi2
+ 396 0144 80B1     		cbz	r0, .L44
+  91:main.c        ****             { // loop exit due to btn_pressed withing window
+ 397              		.loc 1 91 18 is_stmt 1 view .LVU141
+ 398              	.LBB26:
+  93:main.c        ****                 uint32_t current_response_time_ms = (current_time_ms - start_ms);
+ 399              		.loc 1 93 17 view .LVU142
+  93:main.c        ****                 uint32_t current_response_time_ms = (current_time_ms - start_ms);
+ 400              		.loc 1 93 44 is_stmt 0 view .LVU143
+ 401 0146 FFF7FEFF 		bl	get_millis
+ 402              	.LVL38:
+  94:main.c        **** 
+ 403              		.loc 1 94 17 is_stmt 1 view .LVU144
+  94:main.c        **** 
+ 404              		.loc 1 94 26 is_stmt 0 view .LVU145
+ 405 014a 451B     		subs	r5, r0, r5
+ 406              	.LVL39:
+  96:main.c        **** 
+ 407              		.loc 1 96 17 is_stmt 1 view .LVU146
+  96:main.c        **** 
+ 408              		.loc 1 96 37 is_stmt 0 view .LVU147
+ 409 014c FFF7FEFF 		bl	which_button_pressed
+ 410              	.LVL40:
+  98:main.c        ****                 {
+ 411              		.loc 1 98 17 is_stmt 1 view .LVU148
+  98:main.c        ****                 {
+ 412              		.loc 1 98 20 is_stmt 0 view .LVU149
+ 413 0150 5845     		cmp	r0, fp
+ 414 0152 0ED1     		bne	.L47
+ 103:main.c        ****                 {
+ 415              		.loc 1 103 22 is_stmt 1 view .LVU150
+ 103:main.c        ****                 {
+ 416              		.loc 1 103 25 is_stmt 0 view .LVU151
+ 417 0154 B5F52F7F 		cmp	r5, #700
+ 418 0158 05D8     		bhi	.L16
+ 105:main.c        ****                     store_response_time(current_response_time_ms);
+ 419              		.loc 1 105 21 is_stmt 1 view .LVU152
+ 420 015a 0120     		movs	r0, #1
+ 421              	.LVL41:
+ 105:main.c        ****                     store_response_time(current_response_time_ms);
+ 422              		.loc 1 105 21 is_stmt 0 view .LVU153
+ 423 015c 0AE0     		b	.L43
+ 424              	.LVL42:
+ 425              	.L3:
+ 105:main.c        ****                     store_response_time(current_response_time_ms);
+ 426              		.loc 1 105 21 view .LVU154
+ 427              	.LBE26:
+ 428              	.LBE31:
+ 429              	.LBE39:
+  28:main.c        ****     {
+ 430              		.loc 1 28 5 is_stmt 1 view .LVU155
+  32:main.c        ****         {
+ 431              		.loc 1 32 9 view .LVU156
+ 432              	.LBB40:
+ 433              	.LBB32:
+  54:main.c        ****             {
+ 434              		.loc 1 54 13 view .LVU157
+  54:main.c        ****             {
+ 435              		.loc 1 54 16 is_stmt 0 view .LVU158
+ 436 015e 072C     		cmp	r4, #7
+ 437 0160 16D1     		bne	.L48
+ 438 0162 0323     		movs	r3, #3
+ 439 0164 D0E7     		b	.L9
+ 440              	.LVL43:
+ 441              	.L16:
+  54:main.c        ****             {
+ 442              		.loc 1 54 16 view .LVU159
+ 443              	.LBE32:
+ 444              	.LBB33:
+ 445              	.LBB29:
+ 110:main.c        ****                 }
+ 446              		.loc 1 110 21 is_stmt 1 view .LVU160
+ 447 0166 0220     		movs	r0, #2
+ 448              	.LVL44:
+ 449              	.L44:
+ 110:main.c        ****                 }
+ 450              		.loc 1 110 21 is_stmt 0 view .LVU161
+ 451 0168 FFF7FEFF 		bl	handle_score
+ 452              	.LVL45:
+ 453 016c CBE7     		b	.L13
+ 454              	.LVL46:
+ 455              	.L29:
+ 110:main.c        ****                 }
+ 456              		.loc 1 110 21 view .LVU162
+ 457              	.LBE29:
+ 458              	.LBE33:
+ 459              	.LBB34:
+ 460              	.LBB21:
+ 164:main.c        ****     if (response_time_index > 0)
+ 461              		.loc 1 164 11 view .LVU163
+ 462 016e 0020     		movs	r0, #0
+ 463 0170 84E7     		b	.L18
+ 464              	.LVL47:
+ 465              	.L47:
+ 164:main.c        ****     if (response_time_index > 0)
+ 466              		.loc 1 164 11 view .LVU164
+ 467              	.LBE21:
+ 468              	.LBE34:
+ 469              	.LBB35:
+ 470              	.LBB30:
+ 100:main.c        ****                     store_response_time(current_response_time_ms);
+ 471              		.loc 1 100 21 is_stmt 1 view .LVU165
+ 472 0172 0020     		movs	r0, #0
+ 473              	.LVL48:
+ 474              	.L43:
+ 105:main.c        ****                     store_response_time(current_response_time_ms);
+ 475              		.loc 1 105 21 is_stmt 0 view .LVU166
+ 476 0174 FFF7FEFF 		bl	handle_score
+ 477              	.LVL49:
+ 106:main.c        ****                 }
+ 478              		.loc 1 106 21 is_stmt 1 view .LVU167
+ 479              	.LBB27:
+ 480              	.LBI27:
+ 153:main.c        **** {
+ 481              		.loc 1 153 6 view .LVU168
+ 482              	.LBB28:
+ 155:main.c        ****     {
+ 483              		.loc 1 155 5 view .LVU169
+ 155:main.c        ****     {
+ 484              		.loc 1 155 29 is_stmt 0 view .LVU170
+ 485 0178 99F80030 		ldrb	r3, [r9]	@ zero_extendqisi2
+ 159:main.c        **** }
+ 486              		.loc 1 159 43 view .LVU171
+ 487 017c 0A4A     		ldr	r2, .L49+8
+ 155:main.c        ****     {
+ 488              		.loc 1 155 8 view .LVU172
+ 489 017e 072B     		cmp	r3, #7
+ 490 0180 28BF     		it	cs
+ 491 0182 0023     		movcs	r3, #0
+ 159:main.c        **** }
+ 492              		.loc 1 159 5 is_stmt 1 view .LVU173
+ 159:main.c        **** }
+ 493              		.loc 1 159 39 is_stmt 0 view .LVU174
+ 494 0184 591C     		adds	r1, r3, #1
+ 495 0186 89F80010 		strb	r1, [r9]
+ 159:main.c        **** }
+ 496              		.loc 1 159 43 view .LVU175
+ 497 018a 22F81350 		strh	r5, [r2, r3, lsl #1]	@ movhi
+ 498              	.LVL50:
+ 160:main.c        **** 
+ 499              		.loc 1 160 1 view .LVU176
+ 500 018e BAE7     		b	.L13
+ 501              	.LVL51:
+ 502              	.L48:
+ 160:main.c        **** 
+ 503              		.loc 1 160 1 view .LVU177
+ 504              	.LBE28:
+ 505              	.LBE27:
+ 506              	.LBE30:
+ 507              	.LBE35:
+ 508              	.LBB36:
+  60:main.c        ****             wait_millis(random_num << 3);
+ 509              		.loc 1 60 13 is_stmt 1 view .LVU178
+  60:main.c        ****             wait_millis(random_num << 3);
+ 510              		.loc 1 60 35 is_stmt 0 view .LVU179
+ 511 0190 FFF7FEFF 		bl	get_rng_value
+ 512              	.LVL52:
+  61:main.c        ****             current_game_state = STATE_ACTIVE;
+ 513              		.loc 1 61 13 is_stmt 1 view .LVU180
+ 514 0194 C000     		lsls	r0, r0, #3
+ 515              	.LVL53:
+  61:main.c        ****             current_game_state = STATE_ACTIVE;
+ 516              		.loc 1 61 13 is_stmt 0 view .LVU181
+ 517 0196 FFF7FEFF 		bl	wait_millis
+ 518              	.LVL54:
+  62:main.c        ****             round_count++;
+ 519              		.loc 1 62 13 is_stmt 1 view .LVU182
+  63:main.c        ****             break;
+ 520              		.loc 1 63 13 view .LVU183
+  63:main.c        ****             break;
+ 521              		.loc 1 63 24 is_stmt 0 view .LVU184
+ 522 019a 0134     		adds	r4, r4, #1
+ 523              	.LVL55:
+  64:main.c        ****         }
+ 524              		.loc 1 64 13 is_stmt 1 view .LVU185
+ 525 019c 0223     		movs	r3, #2
+ 526 019e B3E7     		b	.L9
+ 527              	.L50:
+ 528              		.align	2
+ 529              	.L49:
+ 530 01a0 00000000 		.word	is_btn_pressed
+ 531 01a4 00200040 		.word	1073750016
+ 532 01a8 00000000 		.word	response_times
+ 533 01ac 00000000 		.word	0
+ 534 01b0 28000000 		.word	.LC1
+ 535 01b4 54000000 		.word	.LC2
+ 536 01b8 00000000 		.word	.LC0
+ 537 01bc 00000000 		.word	current_game_state
+ 538 01c0 00000000 		.word	current_round_points
+ 539 01c4 00000000 		.word	response_time_index
+ 540              	.LBE36:
+ 541              	.LBE40:
+ 542              		.cfi_endproc
+ 543              	.LFE138:
+ 545              		.section	.text.store_response_time,"ax",%progbits
+ 546              		.align	1
+ 547              		.p2align 2,,3
+ 548              		.global	store_response_time
+ 549              		.syntax unified
+ 550              		.thumb
+ 551              		.thumb_func
+ 553              	store_response_time:
+ 554              	.LVL56:
+ 555              	.LFB139:
+ 154:main.c        ****     if (response_time_index >= MAX_RESPONSE_TIMES)
+ 556              		.loc 1 154 1 view -0
+ 557              		.cfi_startproc
+ 558              		@ args = 0, pretend = 0, frame = 0
+ 559              		@ frame_needed = 0, uses_anonymous_args = 0
+ 560              		@ link register save eliminated.
+ 155:main.c        ****     {
+ 561              		.loc 1 155 5 view .LVU187
+ 154:main.c        ****     if (response_time_index >= MAX_RESPONSE_TIMES)
+ 562              		.loc 1 154 1 is_stmt 0 view .LVU188
+ 563 0000 10B4     		push	{r4}
+ 564              		.cfi_def_cfa_offset 4
+ 565              		.cfi_offset 4, -4
+ 155:main.c        ****     {
+ 566              		.loc 1 155 29 view .LVU189
+ 567 0002 074A     		ldr	r2, .L55
+ 159:main.c        **** }
+ 568              		.loc 1 159 43 view .LVU190
+ 569 0004 074C     		ldr	r4, .L55+4
+ 155:main.c        ****     {
+ 570              		.loc 1 155 29 view .LVU191
+ 571 0006 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 155:main.c        ****     {
+ 572              		.loc 1 155 8 view .LVU192
+ 573 0008 062B     		cmp	r3, #6
+ 159:main.c        **** }
+ 574              		.loc 1 159 39 view .LVU193
+ 575 000a 99BF     		ittee	ls
+ 576 000c 591C     		addls	r1, r3, #1
+ 577 000e C9B2     		uxtbls	r1, r1
+ 578 0010 0023     		movhi	r3, #0
+ 579 0012 0121     		movhi	r1, #1
+ 159:main.c        **** }
+ 580              		.loc 1 159 5 is_stmt 1 view .LVU194
+ 159:main.c        **** }
+ 581              		.loc 1 159 39 is_stmt 0 view .LVU195
+ 582 0014 1170     		strb	r1, [r2]
+ 159:main.c        **** }
+ 583              		.loc 1 159 43 view .LVU196
+ 584 0016 24F81300 		strh	r0, [r4, r3, lsl #1]	@ movhi
+ 160:main.c        **** 
+ 585              		.loc 1 160 1 view .LVU197
+ 586 001a 5DF8044B 		ldr	r4, [sp], #4
+ 587              		.cfi_restore 4
+ 588              		.cfi_def_cfa_offset 0
+ 589 001e 7047     		bx	lr
+ 590              	.L56:
+ 591              		.align	2
+ 592              	.L55:
+ 593 0020 00000000 		.word	response_time_index
+ 594 0024 00000000 		.word	response_times
+ 595              		.cfi_endproc
+ 596              	.LFE139:
+ 598              		.section	.text.get_average_response_time,"ax",%progbits
+ 599              		.align	1
+ 600              		.p2align 2,,3
+ 601              		.global	get_average_response_time
+ 602              		.syntax unified
+ 603              		.thumb
+ 604              		.thumb_func
+ 606              	get_average_response_time:
+ 607              	.LFB140:
+ 163:main.c        ****     float average_response_time = 0;
+ 608              		.loc 1 163 1 is_stmt 1 view -0
+ 609              		.cfi_startproc
+ 610              		@ args = 0, pretend = 0, frame = 0
+ 611              		@ frame_needed = 0, uses_anonymous_args = 0
+ 612              		@ link register save eliminated.
+ 164:main.c        ****     if (response_time_index > 0)
+ 613              		.loc 1 164 5 view .LVU199
+ 614              	.LVL57:
+ 165:main.c        ****     {
+ 615              		.loc 1 165 5 view .LVU200
+ 165:main.c        ****     {
+ 616              		.loc 1 165 29 is_stmt 0 view .LVU201
+ 617 0000 0D4B     		ldr	r3, .L62
+ 618 0002 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 165:main.c        ****     {
+ 619              		.loc 1 165 8 view .LVU202
+ 620 0004 A9B1     		cbz	r1, .L60
+ 621 0006 0D4B     		ldr	r3, .L62+4
+ 164:main.c        ****     if (response_time_index > 0)
+ 622              		.loc 1 164 11 view .LVU203
+ 623 0008 9FED0D7A 		vldr.32	s14, .L62+8
+ 624 000c 03EB4102 		add	r2, r3, r1, lsl #1
+ 625              	.LVL58:
+ 626              	.L59:
+ 627              	.LBB41:
+ 169:main.c        ****         }
+ 628              		.loc 1 169 13 is_stmt 1 view .LVU204
+ 169:main.c        ****         }
+ 629              		.loc 1 169 52 is_stmt 0 view .LVU205
+ 630 0010 33F8020B 		ldrh	r0, [r3], #2
+ 631              	.LVL59:
+ 169:main.c        ****         }
+ 632              		.loc 1 169 52 view .LVU206
+ 633 0014 07EE900A 		vmov	s15, r0	@ int
+ 169:main.c        ****         }
+ 634              		.loc 1 169 35 view .LVU207
+ 635 0018 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 167:main.c        ****         {
+ 636              		.loc 1 167 31 discriminator 1 view .LVU208
+ 637 001c 9A42     		cmp	r2, r3
+ 169:main.c        ****         }
+ 638              		.loc 1 169 35 view .LVU209
+ 639 001e 37EE277A 		vadd.f32	s14, s14, s15
+ 640              	.LVL60:
+ 167:main.c        ****         {
+ 641              		.loc 1 167 55 is_stmt 1 discriminator 3 view .LVU210
+ 167:main.c        ****         {
+ 642              		.loc 1 167 31 discriminator 1 view .LVU211
+ 643 0022 F5D1     		bne	.L59
+ 644              	.LBE41:
+ 171:main.c        ****     }
+ 645              		.loc 1 171 9 view .LVU212
+ 171:main.c        ****     }
+ 646              		.loc 1 171 31 is_stmt 0 view .LVU213
+ 647 0024 07EE901A 		vmov	s15, r1	@ int
+ 648 0028 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 649 002c 87EE270A 		vdiv.f32	s0, s14, s15
+ 650              	.LVL61:
+ 171:main.c        ****     }
+ 651              		.loc 1 171 31 view .LVU214
+ 652 0030 7047     		bx	lr
+ 653              	.LVL62:
+ 654              	.L60:
+ 164:main.c        ****     if (response_time_index > 0)
+ 655              		.loc 1 164 11 view .LVU215
+ 656 0032 9FED030A 		vldr.32	s0, .L62+8
+ 657              		.loc 1 173 5 is_stmt 1 view .LVU216
+ 174:main.c        **** }
+ 658              		.loc 1 174 1 is_stmt 0 view .LVU217
+ 659 0036 7047     		bx	lr
+ 660              	.L63:
+ 661              		.align	2
+ 662              	.L62:
+ 663 0038 00000000 		.word	response_time_index
+ 664 003c 00000000 		.word	response_times
+ 665 0040 00000000 		.word	0
+ 666              		.cfi_endproc
+ 667              	.LFE140:
+ 669              		.global	current_game_state
+ 670              		.section	.bss.current_game_state,"aw",%nobits
+ 673              	current_game_state:
+ 674 0000 00       		.space	1
+ 675              		.text
+ 676              	.Letext0:
+ 677              		.file 2 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 678              		.file 3 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 679              		.file 4 "./Include/nrf52840.h"
+ 680              		.file 5 "helper.h"
+ 681              		.file 6 "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/arm-none-eabi/include/stdio.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:21     .rodata.main.str1.4:00000000 $d
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:22     .rodata.main.str1.4:00000000 .LC0
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:28     .rodata.main.str1.4:00000054 .LC2
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:31     .text.startup.main:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:38     .text.startup.main:00000000 main
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:530    .text.startup.main:000001a0 $d
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:673    .bss.current_game_state:00000000 current_game_state
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:546    .text.store_response_time:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:553    .text.store_response_time:00000000 store_response_time
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:593    .text.store_response_time:00000020 $d
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:599    .text.get_average_response_time:00000000 $t
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:606    .text.get_average_response_time:00000000 get_average_response_time
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:663    .text.get_average_response_time:00000038 $d
+/var/folders/cf/llvdtncn3h30s1g5n80jhxzm0000gn/T//ccODIaQM.s:674    .bss.current_game_state:00000000 $d
+                           .group:00000000 wm4.0.a9292fe2a95fc49667a00dda3dad9215
+                           .group:00000000 wm4.stdarg.h.31.f7f4f3bfddce9ed034956076d59396f7
+                           .group:00000000 wm4.stddef.h.39.811583f327f35b0df7808fda70b062a0
+                           .group:00000000 wm4.printf.h.60.4e905941388f8572eb1bb13f71697bea
+                           .group:00000000 wm4._newlib_version.h.4.0eb654b64686e2bd29646258853f6c22
+                           .group:00000000 wm4.features.h.33.d554620bb17bd3b714c3fb5c268772bc
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.nrf.h.36.2c9771b922e05998cb98cd38e577d26d
+                           .group:00000000 wm4.nrf52840.h.54.2eff2f64e4f718309725743e020c1c3e
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm4.h.66.d954c01095d518cd043caf62225efced
+                           .group:00000000 wm4.cmsis_gcc.h.26.ec732d7dec3e44b4b15b499f7fbfba3f
+                           .group:00000000 wm4.core_cm4.h.186.369ba2229bf6f92b71e2ad1ae8388018
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.nrf52840.h.2760.94facbe4f0b1a63284aed08b8635f538
+                           .group:00000000 wm4.nrf52840_bitfields.h.36.6f0372e47edb7eb297e4f285382d0a6c
+                           .group:00000000 wm4.nrf51_to_nrf52840.h.36.a52984f77ed625f80506d6aa3574a54b
+                           .group:00000000 wm4.nrf52_to_nrf52840.h.36.718b4211de2aa9d86eb1b548550c2d83
+                           .group:00000000 wm4.compiler_abstraction.h.36.11adf2fa28a4f329a07fa847d09bfcb7
+                           .group:00000000 wm4.newlib.h.7.cf8eb215de583de90082131629e599f8
+                           .group:00000000 wm4.ieeefp.h.77.61a77db5804869b1dadd307a77cf78c9
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.56fd742369e655e7e8a7e365e706e208
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.173.4903093a50a8482cb062b176ea61fac3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.078903e3d6b56074951b57c5af815ad6
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.173.1cea4f16a943c8e875db6791959c3141
+                           .group:00000000 wm4.inttypes.h.14.b28deb26920e51e0da310220ef0f9003
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stdio.h.39.ae2a25052646cadc7c97f9a7a14353d0
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.helper.h.13.46a1f05e2e0c115d9cf7d60341982696
+
+UNDEFINED SYMBOLS
+configure_leds
+configure_buttons
+configure_uart
+configure_rng
+configure_milli_timer
+__aeabi_f2d
+snprintf_
+get_rng_value
+set_led
+get_millis
+which_button_pressed
+handle_score
+wait_millis
+is_btn_pressed
+response_times
+current_round_points
+response_time_index

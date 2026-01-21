@@ -12,12 +12,10 @@ Clearing Bits -> ~BV(...) -> "You need to flip bits to 0 (e.g., REG &= ~BV(5))."
 
 */
 
-
 // Helper macros to access registers.
 #define BV_BY_NAME(field, value) ((field##_##value << field##_Pos) & field##_Msk)
 #define BV_BY_VALUE(field, value) (((value) << field##_Pos) & field##_Msk)
 #define BV(pos) (1u << (pos))
-
 
 int main(void)
 {

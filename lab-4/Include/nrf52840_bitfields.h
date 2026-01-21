@@ -11347,7 +11347,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 /* Register: RNG_SHORTS */
 /* Description: Shortcuts between local events and tasks */
-
+TIMER0
 /* Bit 0 : Shortcut between event VALRDY and task STOP */
 #define RNG_SHORTS_VALRDY_STOP_Pos (0UL) /*!< Position of VALRDY_STOP field. */
 #define RNG_SHORTS_VALRDY_STOP_Msk (0x1UL << RNG_SHORTS_VALRDY_STOP_Pos) /*!< Bit mask of VALRDY_STOP field. */
